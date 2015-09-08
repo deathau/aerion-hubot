@@ -19,7 +19,7 @@ mailinatorDomains = [
 ]
 
 mailinatorEmail = (msg, email) ->
-  email.replace /example\.com/, ""
+  email = email.replace /example\.com/, ""
   domain = msg.random mailinatorDomains
   email + domain + " (http://mailinator.com/inbox.jsp?to=#{email})"
 
@@ -39,7 +39,7 @@ module.exports = (robot) ->
             msg.send "#{data.name.first.capitalize()} #{data.name.last.capitalize()}\n" +
               "Gender: #{data.gender}\n" +
               "Email: #{mailinatorEmail(msg, data.email)}\n" +
-              "Picture: #{data.picture}"
+              "Picture: #{data.picture.large}"
 
           catch err
             msg.reply "Error occured parsing response body: #{err}"
