@@ -9,5 +9,14 @@
   "hubot-redis-brain",
   "hubot-rules",
   "hubot-youtube",
-  "hubot-meme"
+  "hubot-meme",
+  "hubot-catfacts",
+  "hubot-currency",
+  "hubot-isup",
+  "hubot-hipchat-emoticons",
+  "hubot-schedule",
+  "hubot-urban",
+  "hubot-wikipedia",
+  "hubot-wolfram",
+  "hubot-xkcd"
 ]
