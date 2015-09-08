@@ -19,9 +19,9 @@ mailinatorDomains = [
 ]
 
 mailinatorEmail = (msg, email) ->
-  email = email.replace /example\.com/, ""
+  email = email.replace /@example\.com/, ""
   domain = msg.random mailinatorDomains
-  email + domain + " (http://mailinator.com/inbox.jsp?to=#{email})"
+  email + "@" + domain + " (http://mailinator.com/inbox.jsp?to=#{email})"
 
 String::capitalize = ->
   "#{@charAt(0).toUpperCase()}#{@slice(1)}"
