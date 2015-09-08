@@ -6,20 +6,9 @@
 #
 # Commands:
 #   hubot random user - Get random user data from randomuser.me
-#   Bonus: emails use a random domain from a shortlist of mailinator domains instead of example.com, so you can actually check their mail!
 #
 # Author:
 #   tombell
-
-mailinatorDomains = [
-  "mailinator.com", "mailismagic.com", "monumentmail.com", "mailtothis.com", "zippymail.info"
-]
-
-mailinatorEmail = (msg, email) ->
-  email.replace /example\.com/, ""
-  domain = msg.random malinatorDomains
-  email + domain + " (http://mailinator.com/inbox.jsp?to=#{email})"
-  
 
 String::capitalize = ->
   "#{@charAt(0).toUpperCase()}#{@slice(1)}"
