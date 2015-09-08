@@ -11,12 +11,16 @@
 #   tombell
 
 mailinatorDomains = [
-  "mailinator.com", "mailismagic.com", "monumentmail.com", "mailtothis.com", "zippymail.info"
+  "mailinator.com",
+  "mailismagic.com",
+  "monumentmail.com",
+  "mailtothis.com",
+  "zippymail.info"
 ]
 
 mailinatorEmail = (msg, email) ->
   email.replace /example\.com/, ""
-  domain = msg.random malinatorDomains
+  domain = msg.random mailinatorDomains
   email + domain + " (http://mailinator.com/inbox.jsp?to=#{email})"
 
 String::capitalize = ->
