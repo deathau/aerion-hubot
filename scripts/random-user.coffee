@@ -10,6 +10,15 @@
 # Author:
 #   tombell
 
+mailinatorDomains = [
+  "mailinator.com", "mailismagic.com", "monumentmail.com", "mailtothis.com", "zippymail.info"
+]
+
+mailinatorEmail = (msg, email) ->
+  email.replace /example\.com/, ""
+  domain = msg.random malinatorDomains
+  email + domain + " (http://mailinator.com/inbox.jsp?to=#{email})"
+
 String::capitalize = ->
   "#{@charAt(0).toUpperCase()}#{@slice(1)}"
 
@@ -25,7 +34,7 @@ module.exports = (robot) ->
             data = JSON.parse(body).results[0].user
             msg.send "#{data.name.first.capitalize()} #{data.name.last.capitalize()}\n" +
               "Gender: #{data.gender}\n" +
-              "Email: #{data.email}\n" +
+              "Email: #{mailinatorEmail(msg, data.email)}\n" +
               "Picture: #{data.picture}"
 
           catch err
