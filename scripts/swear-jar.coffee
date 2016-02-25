@@ -20,7 +20,7 @@ module.exports = (robot) ->
   robot.hear regex, (msg) ->
     theSwear = msg.match[0]
     userName = msg.message.user.name
-    msg.send "Swear Jar! \n http://49.media.tumblr.com/6f8a8468b45c655f15294368b0909b07/tumblr_muyadhp4KI1sc9c73o2_250.gif"
+    msg.send "Swear Jar! (swear)"
     swearBrain = robot.brain.swearbot ? [ ]
     swearUser = swearBrain[userName] ? { User: userName, Swears: [ ] }
     swearUser.Swears.push { Swear: theSwear, Date: new Date }
