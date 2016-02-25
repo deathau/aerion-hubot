@@ -14,7 +14,7 @@
 #   death_au
 
 profanity = require './data/profanity.json'
-regex = new RegExp profanity.join('|'), 'gi'
+regex = new RegExp '\\b(' + profanity.join('|') + ')\\b', 'i'
 
 module.exports = (robot) ->
   robot.hear regex, (msg) ->
@@ -42,5 +42,4 @@ module.exports = (robot) ->
     else
       res.send("Swears for " + userName + ":")
       for swear in swearUser.Swears
-        res.send(swear)
         res.send(swear.Swear + " (" + swear.Date + ")")
