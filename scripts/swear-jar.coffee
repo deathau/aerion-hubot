@@ -32,3 +32,15 @@ module.exports = (robot) ->
     for userName,swearUser of swearBrain
       if swearUser.Swears.length > 0
         msg.send userName + ": " + swearUser.Swears.length
+
+  robot.respond /swears for (.*)/i, (res) ->
+    userName = res.match[1]
+    swearBrain = robot.brain.swearbot ? []
+    swearUser = swearBrain[userName] ? null
+    if swearUser == null
+      res.send(userName + " hasn't sworn")
+    else
+      res.send("Swears for " + userName + ":")
+      for swear in swearUser.Swears
+        res.send(swear)
+        res.send(swear.Swear + " (" + swear.Date + ")")
