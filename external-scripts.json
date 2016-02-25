@@ -17,5 +17,7 @@
   "hubot-schedule",
   "hubot-urban",
   "hubot-wikipedia",
-  "hubot-xkcd"
+  "hubot-xkcd",
+  "hubot-relevant-xkcd",
+  "hubot-decide"
 ]
