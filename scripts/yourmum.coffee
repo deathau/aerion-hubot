@@ -26,7 +26,7 @@ module.exports = (robot) ->
 		if not lower.match dontmatchRegex
 		#if lower.indexOf("your face") < 0 and lower.indexOf("how") < 0 and lower.indexOf("why") < 0 and lower.indexOf("wtf") < 0 and lower.indexOf("when") < 0 and lower.indexOf("where") < 0
 			yourFace = message.match[2] + " " + message.match[3]
-			lastYourFace[(message.message.user.mention_name + '').toLowerCase()] = yourFace
+			lastYourFace[('@' + message.message.user.mention_name + '').toLowerCase()] = yourFace
 			if Math.random() <= (percent / 100.0)
 				setTimeout (->
 					message.send "your " + options[Math.floor(Math.random() * options.length)] + " " + yourFace
@@ -41,7 +41,7 @@ module.exports = (robot) ->
 		if lastYourFace[name.toLowerCase()]
 			message.send name + ": Your " + message.match[2] + " " + lastYourFace[name.toLowerCase()]
 		else
-			message.send "I don't know how " + name + "'s " + message.match[2] + " is. :("
+			message.send "I don't know how @" + name + "'s " + message.match[2] + " is. :("
 	
 		return
 
