@@ -4,7 +4,7 @@
 #
 # Configuration:
 #   HUBOT_YOURFACE_PERCENT (optional)
-#		Percent chance that hubot will repond with a "Your face". Default is 40%
+#		Percent chance that hubot will repond with a "Your face". Default is 0% (never)
 #
 # Notes:
 #   <optional notes required for the script>
@@ -12,7 +12,7 @@
 # Author:
 #   Joe Bott
 
-options = ["mum", "dad", "face", "mum's face", "dad's face", "code"]
+options = ["mum", "dad", "mum's face", "dad's face", "face", "code"]
 optionsString = options.join('|')
 yourfaceRegex = new RegExp "how is (.*|my) (" + optionsString + ")\\??$", 'i'
 dontmatchRegex = new RegExp "your " + options.join("|your ") + "|how|why|wtf|when|where", 'i'
