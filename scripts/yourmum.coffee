@@ -36,7 +36,7 @@ module.exports = (robot) ->
 	robot.respond yourfaceRegex, (message) ->
 		name = message.match[1].replace("'s", '')
 
-		name = message.message.user.mention_name + '' if message.match[1] == 'my'
+		name = '@' + message.message.user.mention_name + '' if message.match[1] == 'my'
 
 		if lastYourFace[name.toLowerCase()]
 			message.send name + ": Your " + message.match[2] + " " + lastYourFace[name.toLowerCase()]
