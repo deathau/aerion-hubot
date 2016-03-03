@@ -40,9 +40,19 @@
 #   ericjsilva, Eric Silva
 #   lukewaite, Luke Waite
 
+sanitizeHtml = require 'sanitize-html'
 memeGenerator = require "./lib/memecaptain.coffee"
 
 module.exports = (robot) ->
+  
+  # middleware to strip html. This will stop success kid showing up on something like
+  # "<span class='aui-lozenge-success'>"
+  robot.receiveMiddleware (context, next, done) ->
+    if context.response.message.text
+      clean = sanitizeHtml(context.response.message.text, {allowedTags:[]})
+      context.response.message.text = clean
+    next(done)
+    
   robot.hear /Y U NO (.+)/i, id: 'meme.y-u-no', (msg) ->
     memeGenerator msg, 'NryNmg', 'Y U NO', msg.match[1]
 
