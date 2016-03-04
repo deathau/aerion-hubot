@@ -15,10 +15,10 @@
 #   Gordon Pedersen
 
 module.exports = (robot) ->
-  robot.respond /debug userinfo/, (msg) ->
-    for key in msg.message.user
-      msg.send(key + " : " + msg.message.user[key])
+  robot.respond /debug userinfo/i, (msg) ->
+    for key,value of msg.message.user
+      msg.send(key + " : " + value)
 	  
-  robot.respond /debug messageinfo/, (msg) ->
-    for key in msg.message
-      msg.send(key + " : " + msg.message[key])
+  robot.respond /debug messageinfo/i, (msg) ->
+    for key,value of msg.message
+      msg.send(key + " : " + value)
