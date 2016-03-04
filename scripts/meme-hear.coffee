@@ -33,6 +33,8 @@
 #   khanify <text> - Meme: Has Shatner yell your phrase
 #   pun | bad joke eel <text>? <text> - Meme: Bad joke eel
 #   pun | bad joke eel <text> / <text> - Meme: Bad joke eel
+#   why not both? - Meme: Mexican girl
+#   why not <text> - Meme: Why not Zoidberg?
 # Author:
 #   bobanj
 #   cycomachead, Michael Ball <cycomachead@gmail.com>
@@ -147,4 +149,10 @@ module.exports = (robot) ->
 
   robot.hear /(?:bad joke eel|pun)(.+\?) (.+)/i, id: 'meme.bad-joke-eel', (msg) ->
     memeGenerator msg, 'R35VNw', msg.match[1], msg.match[2]
+    
+  robot.hear /why not (\w+)/i, id: 'meme.why-not-zoidberg', (msg) ->
+    if msg.match[1].toLowerCase() == "both"
+      msg.send "https://media.giphy.com/media/DZyxZgmcbC264/giphy.gif"
+    else
+      memeGenerator msg, 'kzsGfQ', msg.match[1] + '?', 'Why not Zoidberg?'
 
