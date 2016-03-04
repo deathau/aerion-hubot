@@ -17,26 +17,25 @@ profanity = require './data/profanity.json'
 regex = new RegExp '\\b(' + profanity.join('|') + ')\\b', 'i'
 
 module.exports = (robot) ->
+  robot.brain.on 'loaded', =>
+    robot.brain.data.swearbot ||= {}
+  
   robot.hear regex, (msg) ->
     theSwear = msg.match[0]
     userName = msg.message.user.name
     msg.send "Swear Jar! (swear)"
-    swearBrain = robot.brain.swearbot ? [ ]
-    swearUser = swearBrain[userName] ? { User: userName, Swears: [ ] }
+    swearUser = robot.brain.data.swearbot[userName] ? { User: userName, Swears: [ ] }
     swearUser.Swears.push { Swear: theSwear, Date: new Date }
-    swearBrain[userName] = swearUser
-    robot.brain.swearbot = swearBrain
+    robot.brain.data.swearbot[userName] = swearUser
     
   robot.respond /swearjar/i, (msg) ->
-    swearBrain = robot.brain.swearbot ? [ ]
-    for userName,swearUser of swearBrain
+    for userName,swearUser of robot.brain.data.swearbot
       if swearUser.Swears.length > 0
         msg.send userName + ": " + swearUser.Swears.length
 
   robot.respond /swears for (.*)/i, (res) ->
     userName = res.match[1]
-    swearBrain = robot.brain.swearbot ? []
-    swearUser = swearBrain[userName] ? null
+    swearUser = robot.brain.data.swearbot[userName] ? null
     if swearUser == null
       res.send(userName + " hasn't sworn")
     else
