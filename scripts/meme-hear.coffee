@@ -35,6 +35,7 @@
 #   pun | bad joke eel <text> / <text> - Meme: Bad joke eel
 #   why not both? - Meme: Mexican girl
 #   why not <text> - Meme: Why not Zoidberg?
+#   is only <text> - Meme: Why you heff to be med?
 # Author:
 #   bobanj
 #   cycomachead, Michael Ball <cycomachead@gmail.com>
@@ -155,4 +156,7 @@ module.exports = (robot) ->
       msg.send "https://media.giphy.com/media/DZyxZgmcbC264/giphy.gif"
     else
       memeGenerator msg, 'kzsGfQ', msg.match[1] + '?', 'Why not Zoidberg?'
+
+  robot.hear /IT?'?S (ONLY|JUST)( A)? (.+)/i, id: 'meme.why-heff-med', (msg) ->
+    memeGenerator msg, 'iAGOQw', 'IS ONLY ' + msg.match[3], "WHY YOU HEFF TO BE MED?"
 
