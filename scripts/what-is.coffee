@@ -28,8 +28,8 @@ module.exports = (robot) ->
     lmgtfy = false
     doStuff msg
 
-  #robot.respond matchRegex, (msg) ->
-  #  lmgtfy = true
+  robot.respond matchRegex, (msg) ->
+    lmgtfy = true
   #  doStuff msg
 
 doStuff = (msg) ->
@@ -65,8 +65,9 @@ runQuery = (msg, query) ->
         description = result.detailedDescription
         if result.image?
           msg.send "#{result.image.contentUrl}&.jpg"
-        msg.send "/quote #{description.articleBody}"
-        msg.send "#{description.url}"
+        if description?
+          msg.send "/quote #{description.articleBody}"
+          msg.send "#{description.url}"
       else if lmgtfy
         msg.send "How the hell am I supposed to know?"
         msg.send "http://lmgtfy.com/?q=#{query}"
