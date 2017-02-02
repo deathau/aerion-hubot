@@ -47,7 +47,7 @@ module.exports = (robot) ->
           thepost += mainObj[i].data.title
           if mainObj[i].data.preview
             thepost += '\n' + mainObj[i].data.preview.images[0].source.url
-          thepost += '\n' + mainObj[i].data.permalink
+          thepost += "\nhttps://www.reddit.com" + mainObj[i].data.permalink
           posts.push thepost
           i++
         msg.send message + msg.random posts
