@@ -30,7 +30,8 @@
     "hubot-wikipedia": "0.0.2",
     "hubot-xkcd": "0.0.3",
     "hubot-youtube": "^0.1.2",
-    "sanitize-html": "^1.11.3"
+    "sanitize-html": "^1.11.3",
+    "morae": "^2.0.1"
   },
   "engines": {
     "node": "0.10.x"
