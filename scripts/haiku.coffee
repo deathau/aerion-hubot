@@ -18,7 +18,6 @@ morae = require 'morae'
 module.exports = (robot) ->
     
   morae (m) ->
-    console.log("Morae finished loading. Haikus are now a thing.")
     robot.respond /haiku (.*)/i, (res) ->
       message = res.match[1]
       syllables = m.count(message)
