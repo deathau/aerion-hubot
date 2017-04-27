@@ -19,5 +19,6 @@
   "hubot-wikipedia",
   "hubot-xkcd",
   "hubot-relevant-xkcd",
-  "hubot-decide"
+  "hubot-decide",
+  "hubot-frinkiac"
 ]
