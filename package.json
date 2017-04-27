@@ -10,6 +10,7 @@
     "hubot-currency": "^1.0.1",
     "hubot-decide": "^1.0.1",
     "hubot-diagnostics": "0.0.1",
+    "hubot-frinkiac": "^2.2.0",
     "hubot-google-images": "^0.1.4",
     "hubot-google-translate": "^0.1.0",
     "hubot-help": "^0.1.1",
@@ -30,8 +31,8 @@
     "hubot-wikipedia": "0.0.2",
     "hubot-xkcd": "0.0.3",
     "hubot-youtube": "^0.1.2",
-    "sanitize-html": "^1.11.3",
-    "morae": "^2.0.1"
+    "morae": "^2.0.1",
+    "sanitize-html": "^1.11.3"
   },
   "engines": {
     "node": "0.10.x"
