@@ -90,7 +90,6 @@ class Frinkiac
     if (err)
       @msg.send "ERROR: #{err}"
 
-    @msg.send body
     data = JSON.parse(body)
     ep = data.Frame.Episode
     stamp = data.Frame.Timestamp
