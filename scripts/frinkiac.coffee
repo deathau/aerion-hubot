@@ -83,7 +83,7 @@ class Frinkiac
       else
         @robot.http("#{@caption_url}?e=#{image.Episode}&t=#{image.Timestamp}").get() @handleCaptionGet
     else
-      @msg.send 'http://bukk.it/fail.jpg'
+      @msg.send "D'oh! I couldn't find anything for `#{@query}`."
 
   # Handle response from caption API request
   handleCaptionGet: (err, res, body) =>
