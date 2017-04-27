@@ -10,7 +10,6 @@
     "hubot-currency": "^1.0.1",
     "hubot-decide": "^1.0.1",
     "hubot-diagnostics": "0.0.1",
-    "hubot-frinkiac": "^2.2.0",
     "hubot-google-images": "^0.1.4",
     "hubot-google-translate": "^0.1.0",
     "hubot-help": "^0.1.1",

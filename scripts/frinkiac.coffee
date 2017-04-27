@@ -1,107 +1,131 @@
 # Description:
-#   Hubot plugin for searching for Simpsons screencaps on Frinkiac
+#   Frinkiac Search and Meme generator
 #
 # Dependencies:
-#   axios
+#   None
 #
 # Configuration:
-#   None
+#  HUBOT_FRINKIAC_MEMEIFY - True to place meme with caption on the image (Default: true)
+#  HUBOT_FRINKIAC_RANDOMIZE - True to randomize the selected image (Default: false)
+#  HUBOT_FRINKIAC_RESPOND_ONLY - True to respond only when directly addressed, false to respond to all messages (Default: false)
 #
 # Commands:
-#   hubot simpsons me <query> | <caption override> - displays a screenshot from the simpsons related to your search
+#   (hubot )frinkiac me <query> - Searches for the query in the Frinkiac database and responds with an image/meme. Respond/hear controlled by configuration.
 #
 # Notes:
-#   None
+#   Check out frinkiac.com, because it's pretty awesome!
 #
 # Author:
-#   None
+#   github.com/morinap
 
-require('es6-promise').polyfill()
-axios = require('axios')
 
-getRequestConfig = (endpoint, params) ->
-  searchUrl = 'https://frinkiac.com/api/search'
-  captionUrl = 'https://frinkiac.com/api/caption'
-  url = if endpoint is 'search' then searchUrl else captionUrl
-  return {
-    method: 'get'
-    url: url
-    params: params
+class Frinkiac
+
+  franchiseServices: {
+    "simpsons": "frinkiac.com",
+    "futurama": "morbotron.com",
   }
+  franchise: "simpsons"
 
-encode = (str) ->
-  encodeURIComponent(str).replace /[!'()*]/g, (c) ->
-    '%' + c.charCodeAt(0).toString(16)
+  # Init some URLS
+  base_url: 'https://frinkiac.com/'
+  search_url: "#{@base_url}api/search?q="
+  img_url: "#{@base_url}img"
+  caption_url: "#{@base_url}/api/caption"
+  meme_url: "#{@base_url}meme"
 
-# we append '#.jpg' to url string because some chat clients (eg. hip chat)
-# will not exapand images if they don't end in an image extension
-getImageUrl = (episode, timestamp, caption) ->
-  "https://frinkiac.com/meme/#{episode}/#{timestamp}.jpg?lines=#{encode(caption)}#.jpg"
+  # Init some other settings
+  max_line_length: 25
+  regex: /((simpsons|futurama) (search|me)|frinkiac) (.*)/i
 
-getLongestWordLength = (words) ->
-  longestWordLength = 0
-  words.forEach (word) ->
-    longestWordLength = word.length if word.length > longestWordLength
-  longestWordLength
+  constructor: (robot, memeify, randomize)->
+    @robot = robot
+    @memeify = memeify
+    @randomize = randomize
 
-getNumberOfWordsBeforeBreaking = (words) ->
-  longestWordLength = getLongestWordLength(words)
-  if longestWordLength <= 5
-    wordsBeforeBreaking = 5
-  else if 5 < longestWordLength <= 8
-    wordsBeforeBreaking = 4
-  else
-    wordsBeforeBreaking = 3
-  wordsBeforeBreaking
+  # Helper for URL component generation
+  encode: (str) =>
+    return encodeURIComponent(str).replace(/%20/g, '+')
 
-addLineBreaks = (str) ->
-  newString = ''
-  words = str.split(' ')
-  wordsBeforeBreaking = getNumberOfWordsBeforeBreaking(words)
-  words.forEach (word, i) ->
-    i++
-    delimiter = if i % wordsBeforeBreaking then ' ' else '\n'
-    newString += word + delimiter
-  newString
+  # Determines actual meme text, with appropriate line breaks
+  calculateMemeText: (subtitles) =>
+    subtitles = subtitles.split(' ')
 
-trimWhitespace = (string) ->
-  string.replace /^\s*|\s*$/g, ''
+    line = '';
+    lines = [];
+    while (subtitles.length > 0)
+      word = subtitles.shift()
+      if ((line.length == 0) || (line.length + word.length <= @max_line_length))
+        line += ' ' + word
+      else
+        lines.push(line);
+        line = '';
+        subtitles.unshift(word);
 
-formatCaption = (caption) ->
-  addLineBreaks(trimWhitespace(caption))
+    if (line.length > 0)
+      lines.push(line);
 
-combineCaptions = (captions) ->
-  if captions.length <= 4
-    newCaption = ''
-    captions.forEach (caption, i) ->
-      newCaption += formatCaption(caption.Content)
-      unless i == (captions.length - 1)
-        newCaption += '\n'
-    newCaption
-  else
-    captions[0].Content
+    return lines.join('\n');
+
+  # Handle response from initial frinkiac search
+  handleImageGet: (err, res, body) =>
+    if (err)
+      @msg.send "ERROR: #{err}"
+
+    images = JSON.parse(body)
+    if images?.length > 0
+      image = if @randomize then @msg.random images else images[0]
+      if !@memeify
+        @msg.send "#{@img_url}/#{image.Episode}/#{image.Timestamp}.jpg"
+      else if @customCaption?
+        subtitles = this.encode(this.calculateMemeText(@customCaption))
+        @msg.send "#{@meme_url}/#{image.Episode}/#{image.Timestamp}.jpg?lines=#{subtitles}#.png"
+      else
+        @robot.http("#{@caption_url}?e=#{image.Episode}&t=#{image.Timestamp}").get() @handleCaptionGet
+    else
+      @msg.send 'http://bukk.it/fail.jpg'
+
+  # Handle response from caption API request
+  handleCaptionGet: (err, res, body) =>
+    if (err)
+      @msg.send "ERROR: #{err}"
+
+    @msg.send body
+    data = JSON.parse(body)
+    ep = data.Frame.Episode
+    stamp = data.Frame.Timestamp
+    if data.Subtitles?.length > 0
+      subtitles = this.encode(this.calculateMemeText(data.Subtitles.map((x) -> return x.Content).join(' ')))
+      @msg.send "#{@meme_url}/#{ep}/#{stamp}.jpg?lines=#{subtitles}#.png"
+    else
+      @msg.send "#{@img_url}/#{ep}/#{stamp}.jpg"
+
+  # Handle message
+  msgHandler: (msg) =>
+    @msg = msg
+    @franchise = msg.match[2] || "simpsons"
+    @query = msg.match[4].split('|')
+    @customCaption = @query[1]
+    @query = @query[0]
+    if !@franchise of @franchiseServices then @franchise = "simpsons"
+    @base_url = "https://#{@franchiseServices[@franchise]}/"
+    @search_url = "#{@base_url}api/search?q="
+    @img_url = "#{@base_url}img"
+    @caption_url = "#{@base_url}api/caption"
+    @meme_url = "#{@base_url}meme"
+    @robot.http("#{@search_url}#{this.encode(@query)}").get() @handleImageGet
 
 module.exports = (robot) ->
-  robot.respond /(simpsons (search|me)|frinkiac) (.*)/i, (msg) ->
-    query = msg.match[3].split('|')
-    customCaption = query[1]
+  # Grab settings
+  memeify = if process.env.HUBOT_FRINKIAC_MEMEIFY == 'false' then false else true
+  randomize = if process.env.HUBOT_FRINKIAC_RANDOMIZE == 'true' then true else false
+  respond = if process.env.HUBOT_FRINKIAC_RESPOND_ONLY == 'true' then true else false
 
-    axios(getRequestConfig('search', {q: query[0]}))
-      .then (response) ->
-        if (response.data.length)
-          episode = response.data[0].Episode
-          timestamp = response.data[0].Timestamp
+  # Create instance
+  frinkiac = new Frinkiac(robot, memeify, randomize)
 
-          if customCaption
-            msg.send getImageUrl(episode, timestamp, formatCaption(customCaption))
-
-          else
-            axios(getRequestConfig('caption', {e: episode, t: timestamp}))
-              .then (response) ->
-                msg.send getImageUrl(episode, timestamp, combineCaptions(response.data.Subtitles))
-
-        else
-          console.log("D'oh! I couldn't find anything for `#{query[0]}`.");
-
-      .catch (error) ->
-        console.error(error);
+  # Hear or respond
+  if respond
+    robot.respond frinkiac.regex, frinkiac.msgHandler
+  else
+    robot.hear frinkiac.regex, frinkiac.msgHandler
