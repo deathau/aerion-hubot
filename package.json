@@ -32,8 +32,5 @@
     "hubot-youtube": "^0.1.2",
     "morae": "^2.0.1",
     "sanitize-html": "^1.11.3"
-  },
-  "engines": {
-    "node": "0.10.x"
   }
 }
