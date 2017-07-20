@@ -31,6 +31,8 @@
     "hubot-xkcd": "0.0.3",
     "hubot-youtube": "^0.1.2",
     "morae": "^2.0.1",
-    "sanitize-html": "^1.11.3"
+    "sanitize-html": "^1.11.3",
+    "underscore": "^1.0.0",
+    "clark": "0.0.6"
   }
 }
