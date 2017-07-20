@@ -70,6 +70,7 @@ module.exports = (robot) ->
     #    name = (name.replace /(^\s*@)|([,\s]*$)/g, '').trim().toLowerCase()
     #  else
     #    name = (name.replace /(^\s*@)|([,:\s]*$)/g, '').trim().toLowerCase()
+    name = name.trim()
 
     # check whether a name was specified. use MRU if not
     unless name? && name != ''
@@ -165,13 +166,14 @@ module.exports = (robot) ->
     from = if msg.message.user.mention_name then msg.message.user.mention_name else msg.message.user.name.toLowerCase()
     user = msg.envelope.user
     room = msg.message.room
-    reason = reason?.trim() # .toLowerCase()
+    reason = reason?.trim().toLowerCase()
 
     # if name
     #  if name.charAt(0) == ':'
     #    name = (name.replace /(^\s*@)|([,\s]*$)/g, '').trim().toLowerCase()
     #  else
     #    name = (name.replace /(^\s*@)|([,:\s]*$)/g, '').trim().toLowerCase()
+    name = name.trim()
 
     isAdmin = @robot.auth?.hasRole(user, 'plusplus-admin') or @robot.auth?.hasRole(user, 'admin')
 
@@ -191,13 +193,12 @@ module.exports = (robot) ->
   robot.respond new RegExp("(?:" + scoreKeyword + ") (for\s)?(.*)", "i"), (msg) ->
     name = msg.match[2].trim() # .toLowerCase()
 
-    if name
-      if name.charAt(0) == ':'
-        name = (name.replace /(^\s*@)|([,\s]*$)/g, '')
-      else
-        name = (name.replace /(^\s*@)|([,:\s]*$)/g, '')
-
-    console.log(name)
+    # if name
+    #  if name.charAt(0) == ':'
+    #    name = (name.replace /(^\s*@)|([,\s]*$)/g, '')
+    #  else
+    #    name = (name.replace /(^\s*@)|([,:\s]*$)/g, '')
+    name = name.trim()
 
     score = scoreKeeper.scoreForUser(name)
     reasons = scoreKeeper.reasonsForUser(name)
