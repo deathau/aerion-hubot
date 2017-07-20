@@ -59,17 +59,17 @@ module.exports = (robot) ->
   ///i, (msg) ->
     # let's get our local vars in place
     [dummy, name, operator, reason] = msg.match
-    from = msg.message.user.name.toLowerCase()
+    from = msg.message.user.mention_name ? msg.message.user.mention_name : msg.message.user.name.toLowerCase()
     room = msg.message.room
 
     # do some sanitizing
     reason = reason?.trim().toLowerCase()
 
-    if name
-      if name.charAt(0) == ':'
-        name = (name.replace /(^\s*@)|([,\s]*$)/g, '').trim().toLowerCase()
-      else
-        name = (name.replace /(^\s*@)|([,:\s]*$)/g, '').trim().toLowerCase()
+    # if name
+    #  if name.charAt(0) == ':'
+    #    name = (name.replace /(^\s*@)|([,\s]*$)/g, '').trim().toLowerCase()
+    #  else
+    #    name = (name.replace /(^\s*@)|([,:\s]*$)/g, '').trim().toLowerCase()
 
     # check whether a name was specified. use MRU if not
     unless name? && name != ''
