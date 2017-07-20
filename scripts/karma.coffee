@@ -78,7 +78,7 @@ module.exports = (robot) ->
       reason = lastReason if !reason? && lastReason?
 
     # check if you're trying to karma yourself
-    if name == from
+    if name == from or name == "@#{from}"
         if operator.slice(0, 1) == "+"
             msg.send("Don't be a weasel.")
         else
