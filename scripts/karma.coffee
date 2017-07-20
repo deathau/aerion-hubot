@@ -79,80 +79,80 @@ module.exports = (robot) ->
 
     # check if you're trying to karma yourself
     if name == from or name == "@#{from}"
-        if operator.slice(0, 1) == "+"
-            msg.send("Don't be a weasel.")
-        else
-            msg.send("Don't be so hard on yourself.")
+      if operator.slice(0, 1) == "+"
+          msg.send("Don't be a weasel.")
+      else
+          msg.send("Don't be so hard on yourself.")
+    else
+      # work out how much we're supposed to be increasing the score
+      amount = operator.length - 1
+      buzzkillAmount = 0
+      
+      # Buzzkill mode
+      if amount > 5
+          buzzkillAmount = amount - 5
+          amount = 5
 
-    # work out how much we're supposed to be increasing the score
-    amount = operator.length - 1
-    buzzkillAmount = 0
-    
-    # Buzzkill mode
-    if amount > 5
-        buzzkillAmount = amount - 5
-        amount = 5
+      # do the {up, down}vote, and figure out what the new score is
+      [score, reasonScore] = if operator.slice(0, 1) == "+"
+                scoreKeeper.add(amount, name, from, room, reason)
+              else
+                scoreKeeper.subtract(amount, name, from, room, reason)
 
-    # do the {up, down}vote, and figure out what the new score is
-    [score, reasonScore] = if operator.slice(0, 1) == "+"
-              scoreKeeper.add(amount, name, from, room, reason)
-            else
-              scoreKeeper.subtract(amount, name, from, room, reason)
-
-    # if we got a score, then display all the things and fire off events!
-    if score?
-      message = if reason?
-                  if reasonScore == 1 or reasonScore == -1
-                    if score == 1 or score == -1
-                      "#{name} has #{score} point for #{reason}."
+      # if we got a score, then display all the things and fire off events!
+      if score?
+        message = if reason?
+                    if reasonScore == 1 or reasonScore == -1
+                      if score == 1 or score == -1
+                        "#{name} has #{score} point for #{reason}."
+                      else
+                        "#{name} has #{score} points, #{reasonScore} of which is for #{reason}."
                     else
-                      "#{name} has #{score} points, #{reasonScore} of which is for #{reason}."
+                      "#{name} has #{score} points, #{reasonScore} of which are for #{reason}."
                   else
-                    "#{name} has #{score} points, #{reasonScore} of which are for #{reason}."
-                else
-                  if score == 1
-                    "#{name} has #{score} point"
-                  else
-                    "#{name} has #{score} points"
+                    if score == 1
+                      "#{name} has #{score} point"
+                    else
+                      "#{name} has #{score} points"
 
 
-      msg.send message
+        msg.send message
 
-      robot.emit "plus-one", {
-        name:      name
-        direction: operator
-        room:      room
-        reason:    reason
-        from:      from
-        amount:    amount
-      }
+        robot.emit "plus-one", {
+          name:      name
+          direction: operator
+          room:      room
+          reason:    reason
+          from:      from
+          amount:    amount
+        }
 
-      if buzzkillAmount > 0
-        buzzkillReason = "attempting to spam karma on #{name}";
-        # do the {up, down}vote, and figure out what the new score is
-        [buzzkillScore, buzzkillReasonScore] = scoreKeeper.subtract(buzzkillAmount, from, robot.name, room, buzzkillReason)
+        if buzzkillAmount > 0
+          buzzkillReason = "attempting to spam karma on #{name}";
+          # do the {up, down}vote, and figure out what the new score is
+          [buzzkillScore, buzzkillReasonScore] = scoreKeeper.subtract(buzzkillAmount, from, robot.name, room, buzzkillReason)
 
-        # if we got a score, then display all the things and fire off events!
-        if buzzkillScore?
-            message =   if buzzkillReasonScore == 1 or buzzkillReasonScore == -1
-                            if buzzkillScore == 1 or buzzkillScore == -1
-                                "#{from} has #{buzzkillScore} point for #{buzzkillReason}."
-                            else
-                                "#{from} has #{buzzkillScore} points, #{buzzkillReasonScore} of which is for #{buzzkillReason}."
-                        else
-                            "#{from} has #{buzzkillScore} points, #{buzzkillReasonScore} of which are for #{buzzkillReason}."
+          # if we got a score, then display all the things and fire off events!
+          if buzzkillScore?
+              message =   if buzzkillReasonScore == 1 or buzzkillReasonScore == -1
+                              if buzzkillScore == 1 or buzzkillScore == -1
+                                  "#{from} has #{buzzkillScore} point for #{buzzkillReason}."
+                              else
+                                  "#{from} has #{buzzkillScore} points, #{buzzkillReasonScore} of which is for #{buzzkillReason}."
+                          else
+                              "#{from} has #{buzzkillScore} points, #{buzzkillReasonScore} of which are for #{buzzkillReason}."
 
 
-            msg.send message
+              msg.send message
 
-            robot.emit "plus-one", {
-                name:      from
-                direction: operator
-                room:      room
-                reason:    buzzkillReason
-                from:      from
-                amount:    buzzkillAmount
-            }
+              robot.emit "plus-one", {
+                  name:      from
+                  direction: operator
+                  room:      room
+                  reason:    buzzkillReason
+                  from:      from
+                  amount:    buzzkillAmount
+              }
 
   robot.respond ///
     (?:erase )
