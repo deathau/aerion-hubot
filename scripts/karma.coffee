@@ -59,7 +59,7 @@ module.exports = (robot) ->
   ///i, (msg) ->
     # let's get our local vars in place
     [dummy, name, operator, reason] = msg.match
-    from = msg.message.user.mention_name ? msg.message.user.mention_name : msg.message.user.name.toLowerCase()
+    from = if msg.message.user.mention_name then msg.message.user.mention_name else msg.message.user.name.toLowerCase()
     room = msg.message.room
 
     # do some sanitizing
@@ -91,8 +91,6 @@ module.exports = (robot) ->
     if amount > 5
         buzzkillAmount = amount - 5
         amount = 5
-    
-    msg.send buzzkillAmount
 
     # do the {up, down}vote, and figure out what the new score is
     [score, reasonScore] = if operator.slice(0, 1) == "+"
