@@ -162,16 +162,16 @@ module.exports = (robot) ->
     $ # eol
   ///i, (msg) ->
     [__, name, reason] = msg.match
-    from = msg.message.user.name.toLowerCase()
+    from = if msg.message.user.mention_name then msg.message.user.mention_name else msg.message.user.name.toLowerCase()
     user = msg.envelope.user
     room = msg.message.room
-    reason = reason?.trim().toLowerCase()
+    reason = reason?.trim() # .toLowerCase()
 
-    if name
-      if name.charAt(0) == ':'
-        name = (name.replace /(^\s*@)|([,\s]*$)/g, '').trim().toLowerCase()
-      else
-        name = (name.replace /(^\s*@)|([,:\s]*$)/g, '').trim().toLowerCase()
+    # if name
+    #  if name.charAt(0) == ':'
+    #    name = (name.replace /(^\s*@)|([,\s]*$)/g, '').trim().toLowerCase()
+    #  else
+    #    name = (name.replace /(^\s*@)|([,:\s]*$)/g, '').trim().toLowerCase()
 
     isAdmin = @robot.auth?.hasRole(user, 'plusplus-admin') or @robot.auth?.hasRole(user, 'admin')
 
@@ -189,7 +189,7 @@ module.exports = (robot) ->
 
   # Catch the message asking for the score.
   robot.respond new RegExp("(?:" + scoreKeyword + ") (for\s)?(.*)", "i"), (msg) ->
-    name = msg.match[2].trim().toLowerCase()
+    name = msg.match[2].trim() # .toLowerCase()
 
     if name
       if name.charAt(0) == ':'
