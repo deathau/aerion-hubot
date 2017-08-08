@@ -24,6 +24,8 @@ class Frinkiac
   franchiseServices: {
     "simpsons": "frinkiac.com",
     "futurama": "morbotron.com",
+    "rickandmorty": "masterofallscience.com",
+    "rick and morty": "masterofallscience.com"
   }
   franchise: "simpsons"
 
@@ -36,7 +38,7 @@ class Frinkiac
 
   # Init some other settings
   max_line_length: 25
-  regex: /((simpsons|futurama) (search|me)|frinkiac) (.*)/i
+  regex: /((simpsons|futurama|rickandmorty|rick and morty) (search|me)|frinkiac) (.*)/i
 
   constructor: (robot, memeify, randomize)->
     @robot = robot
