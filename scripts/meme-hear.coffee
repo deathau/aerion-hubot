@@ -69,7 +69,12 @@ module.exports = (robot) ->
     memeGenerator msg, '_I74XA', 'Brace Yourself', msg.match[1]
 
   robot.hear /(.+) (ALL the .+)/i, id: 'meme.all-the-things', (msg) ->
-    memeGenerator msg, 'Dv99KQ', msg.match[1], msg.match[2]
+    if msg.match[3]
+      msg.match[2] += msg.match[3]
+      meme = if msg.match[3] is '!' then 'Dv99KQ' else if msg.match[3] is '?' or Math.floor(Math.random() * 3) == 0 then '7Q-Mcw' else 'Dv99KQ'
+    else
+      meme = if Math.floor(Math.random() * 3) == 0 then '7Q-Mcw' else 'Dv99KQ'
+    memeGenerator msg, meme, msg.match[1], msg.match[2]
 
   robot.hear /(I DON'?T ALWAYS .*) (BUT WHEN I DO,? .*)/i, id: 'meme.interesting-man', (msg) ->
     memeGenerator msg, 'V8QnRQ', msg.match[1], msg.match[2]
