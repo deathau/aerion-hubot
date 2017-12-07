@@ -79,7 +79,7 @@ module.exports = (robot) ->
   robot.hear /(I DON'?T ALWAYS .*) (BUT WHEN I DO,? .*)/i, id: 'meme.interesting-man', (msg) ->
     memeGenerator msg, 'V8QnRQ', msg.match[1], msg.match[2]
 
-  robot.hear /(.*)(SUCCESS|NAILED IT.*)/i, id: 'meme.success-kid', (msg) ->
+  robot.hear /(.*)\b(SUCCESS|NAILED IT.*)/i, id: 'meme.success-kid', (msg) ->
     memeGenerator msg, 'AbNPRQ', msg.match[1], msg.match[2]
 
   robot.hear /(.*) (\w+\sTOO DAMN .*)/i, id: 'meme.too-damn-high', (msg) ->
