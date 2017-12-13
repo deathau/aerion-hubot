@@ -5,6 +5,8 @@
   "author": "Bob Bergman <rbergman@atlassian.com>",
   "description": "A simple helpful robot for your Company",
   "dependencies": {
+    "@moqada/hubot-schedule-helper": "^1.0.0",
+    "clark": "0.0.6",
     "hubot": "^2.16.0",
     "hubot-catfacts": "^1.0.1",
     "hubot-currency": "^1.0.1",
@@ -23,7 +25,6 @@
     "hubot-redis-brain": "0.0.2",
     "hubot-relevant-xkcd": "^1.0.3",
     "hubot-rules": "^0.1.0",
-    "hubot-schedule": "^0.2.1",
     "hubot-scripts": "^2.5.16",
     "hubot-shipit": "^0.2.0",
     "hubot-urban": "^1.0.0",
@@ -33,6 +34,6 @@
     "morae": "^2.0.1",
     "sanitize-html": "^1.11.3",
     "underscore": "^1.0.0",
-    "clark": "0.0.6"
+    "url-metadata": "^2.1.7"
   }
 }
