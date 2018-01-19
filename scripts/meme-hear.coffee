@@ -44,7 +44,9 @@
 #   lukewaite, Luke Waite
 
 sanitizeHtml = require 'sanitize-html'
-memeGenerator = require "./lib/memecaptain.coffee"
+
+memeGenerator = require "./lib/imgflip.coffee"
+idToUse = 'imgflip_id'
 
 module.exports = (robot) ->
   
@@ -55,113 +57,200 @@ module.exports = (robot) ->
       clean = sanitizeHtml(context.response.message.text, {allowedTags:[]})
       context.response.message.text = clean
     next(done)
+
+  unless robot.brain.data.memes?
+      robot.brain.data.memes = [
+        {
+          id: 'meme.not-simply',
+          regex: /(one does not simply) (.*)/i,
+          imgflip_id: 61579,
+          memecaptain_id: 'da2i4A'
+        },
+        {
+          id: 'meme.interesting-man',
+          regex: /(i don'?t always .*) (but when i do,? .*)/i,
+          imgflip_id: 61532,
+          memecaptain_id: 'V8QnRQ'
+        },
+        {
+          id: 'meme.aliens',
+          regex: /aliens ()(.*)/i,
+          imgflip_id: 101470,
+          memecaptain_id: 'sO-Hng'
+        },
+        {
+          id: 'meme.grumpy-cat',
+          regex: /grumpy cat ()(.*)/i,
+          imgflip_id: 405658
+        },
+        {
+          id: 'meme.everywhere',
+          regex: /(.*),? (\1 everywhere)/i,
+          imgflip_id: 347390,
+          memecaptain_id: 'yDcY5w'
+        },
+        {
+          id: 'meme.not-sure-fry',
+          regex: /(not sure if .*) (or .*)/i,
+          imgflip_id: 61520,
+          memecaptain_id: 'CsNF8w'
+        },
+        {
+          id: 'meme.y-u-no',
+          regex: /(y u no) (.+)/i,
+          imgflip_id: 61527,
+          memecaptain_id: 'NryNmg'
+        },
+        {
+          id: 'meme.brace-yourself',
+          regex: /(brace yoursel[^\s]+) (.*)/i,
+          imgflip_id: 61546,
+          memecaptain_id: '_I74XA'
+        },
+        {
+          id: 'meme.all-the-things', 
+          regex: /(.*) (all the .*)/i,
+          imgflip_id: 61533,
+          memecaptain_id: 'Dv99KQ'
+          # add case for sad all the things?
+        },
+        {
+          id: 'meme.be-great',
+          regex: /(.*) (that would be great|that'?d be great)/i,
+          imgflip_id: 563423,
+          memecaptain_id: 'q1cQXg'
+        },
+        {
+          id: 'meme.too-damn-high',
+          regex: /(.*) (\w+\stoo damn .*)/i,
+          imgflip_id: 61580,
+          memecaptain_id: 'RCkv6Q'
+        },
+        {
+          id: 'meme.yo-dawg',
+          regex: /(yo dawg .*) (so .*)/i,
+          imgflip_id: 101716,
+          memecaptain_id: 'Yqk_kg'
+        },
+        {
+          id: 'meme.bad-time',
+          regex: /(.*) (.* gonna have a bad time)/i,
+          imgflip_id: 100951,
+          memecaptain_id: 'lfSVJw'
+        },
+        {
+          id: 'meme.only-one-around',
+          regex: /(am i the only one around here) (.*)/i,
+          imgflip_id: 259680
+        },
+        {
+          id: 'meme.told-you',
+          regex: /(what if i told you) (.*)/i,
+          imgflip_id: 100947,
+          memecaptain_id: 'fWle1w'
+        },
+        {
+          id: 'meme.aint-nobody',
+          regex: /(.*) (ain'?t nobody got time for? that)/i,
+          imgflip_id: 442575
+        },
+        {
+          id: 'meme.guarantee-it',
+          regex: /(.*) (i guarantee it)/i,
+          imgflip_id: 10672255
+        },
+        {
+          id: 'meme.its-gone',
+          regex: /(.*) (a+n+d+ it'?s gone)/i,
+          imgflip_id: 766986,
+          memecaptain_id: 'uIZe3Q'
+        },
+        {
+          id: 'meme.loses-minds'
+          regex: /(.* bats an eye) (.* loses their minds?)/i,
+          imgflip_id: 1790995
+        },
+        {
+          id: 'meme.back-in-my-day',
+          regex: /(back in my day) (.*)/i,
+          imgflip_id: 718432
+        },
+        {
+          id: 'meme.success-kid',
+          regex: /(.*)\b(SUCCESS|NAILED IT.*)/i,
+          memecaptain_id: 'AbNPRQ',
+          imgflip_id: 61544
+        },
+        {
+          id: 'meme.base-are-belong',
+          regex: /(All your .*) (are belong to .*)/i,
+          memecaptain_id: '76CAvA',
+          imgflip_id: 4503404
+        },
+        {
+          id: 'meme.bitch-please',
+          regex: /(.*)\s*BITCH PLEASE\s*(.*)/i,
+          memecaptain_id: 'jo9J0Q',
+          imgflip_id: 6411349
+        },
+        {
+          id: 'meme.philosoraptor',
+          regex: /(IF .*), ((ARE|CAN|DO|DOES|HOW|IS|MAY|MIGHT|SHOULD|THEN|WHAT|WHEN|WHERE|WHICH|WHO|WHY|WILL|WON\'T|WOULD)[ \'N].*)/i,
+          memecaptain_id: '-kFVmQ',
+          imgflip_id: 61516
+          # add question mark on end?
+        },
+        {
+          id: 'meme.wtf',
+          regex: /(WTF) (.*)/i,
+          memecaptain_id: 'z8IPtw',
+          imgflip_id: 245898
+        },
+        {
+          id: 'meme.doge',
+          regex: /((?:WOW )?(?:SUCH|MUCH) .*) ((SUCH|MUCH|SO|VERY|MANY) .*)/i,
+          memecaptain_id: 'AfO6hw',
+          imgflip_id: 8072285
+        },
+        {
+          id: 'meme.why-not',
+          regex: /why not (\w+)/i,
+          memecaptain_id: 'kzsGfQ',
+          imgflip_id: 61573,
+          top: '{1}?',
+          bottom: 'Why not Zoidberg?'
+          #por que no las dos?
+        },
+        {
+          id: 'meme.why-heff-med',
+          regex: /IT?'?S (ONLY|JUST)( A)? (.+)/i,
+          memecaptain_id: 'iAGOQw',
+          imgflip_id: 109522862,
+          top: 'IS ONLY {3}',
+          bottom: 'WHY YOU HEFF TO BE MED?'
+        },
+        {
+          id: 'meme.whats-the-deal',
+          regex: /(what'?s the deal) (.+)/i,
+          imgflip_id: 46404522
+        }
+      ]
+
+  for meme in robot.brain.data.memes
+    setupResponder robot, meme
+
+setupResponder = (robot, meme) ->
+  if meme[idToUse]
+    robot.hear meme.regex, (msg) ->
+      top = substitute(meme.top, msg, 1)
+      bottom = substitute(meme.bottom, msg, 2)
+      memeGenerator msg, meme[idToUse], top, bottom
+
+substitute = (text, msg, matchNo) ->
+  if text
+    return text.replace /\{([0-9]+)\}/g, (_, index) ->
+      msg.match[index]
+  else
+    return msg.match[matchNo]
     
-  robot.hear /Y U NO (.+)/i, id: 'meme.y-u-no', (msg) ->
-    memeGenerator msg, 'NryNmg', 'Y U NO', msg.match[1]
-
-  robot.hear /aliens guy (.+)/i, id: 'meme.aliens', (msg) ->
-    memeGenerator msg, 'sO-Hng', '', msg.match[1]
-
-  robot.hear /iron price (.+)/i, id: 'meme.iron-price', (msg) ->
-    memeGenerator msg, 'q06KuA', msg.match[1], 'Pay the iron price'
-
-  robot.hear /brace yourself (.+)/i, id: 'meme.brace-yourself', (msg) ->
-    memeGenerator msg, '_I74XA', 'Brace Yourself', msg.match[1]
-
-  robot.hear /(.+) (ALL the .+)/i, id: 'meme.all-the-things', (msg) ->
-    if msg.match[3]
-      msg.match[2] += msg.match[3]
-      meme = if msg.match[3] is '!' then 'Dv99KQ' else if msg.match[3] is '?' or Math.floor(Math.random() * 3) == 0 then '7Q-Mcw' else 'Dv99KQ'
-    else
-      meme = if Math.floor(Math.random() * 3) == 0 then '7Q-Mcw' else 'Dv99KQ'
-    memeGenerator msg, meme, msg.match[1], msg.match[2]
-
-  robot.hear /(I DON'?T ALWAYS .*) (BUT WHEN I DO,? .*)/i, id: 'meme.interesting-man', (msg) ->
-    memeGenerator msg, 'V8QnRQ', msg.match[1], msg.match[2]
-
-  robot.hear /(.*)\b(SUCCESS|NAILED IT.*)/i, id: 'meme.success-kid', (msg) ->
-    memeGenerator msg, 'AbNPRQ', msg.match[1], msg.match[2]
-
-  robot.hear /(.*) (\w+\sTOO DAMN .*)/i, id: 'meme.too-damn-high', (msg) ->
-    memeGenerator msg, 'RCkv6Q', msg.match[1], msg.match[2]
-
-  robot.hear /(NOT SURE IF .*) (OR .*)/i, id: 'meme.not-sure-fry', (msg) ->
-    memeGenerator msg, 'CsNF8w', msg.match[1], msg.match[2]
-
-  robot.hear /(YO DAWG .*) (SO .*)/i, id: 'meme.yo-dawg', (msg) ->
-    memeGenerator msg, 'Yqk_kg', msg.match[1], msg.match[2]
-
-  robot.hear /(All your .*) (are belong to .*)/i, id: 'meme.base-are-belong', (msg) ->
-    memeGenerator msg, '76CAvA', msg.match[1], msg.match[2]
-
-  robot.hear /(.*)\s*BITCH PLEASE\s*(.*)/i, id: 'meme.bitch-please', (msg) ->
-    memeGenerator msg, 'jo9J0Q', msg.match[1], msg.match[2]
-
-  robot.hear /(.*)\s*COURAGE\s*(.*)/i, id: 'meme.courage', (msg) ->
-    memeGenerator msg, 'IMQ72w', msg.match[1], msg.match[2]
-
-  robot.hear /ONE DOES NOT SIMPLY (.*)/i, id: 'meme.not-simply', (msg) ->
-    memeGenerator msg, 'da2i4A', 'ONE DOES NOT SIMPLY', msg.match[1]
-
-  robot.hear /(IF YOU .*\s)(.* GONNA HAVE A BAD TIME)/i, id: 'meme.bad-time', (msg) ->
-    memeGenerator msg, 'lfSVJw', msg.match[1], msg.match[2]
-
-  robot.hear /(.*)TROLLFACE(.*)/i, id: 'meme.trollface', (msg) ->
-    memeGenerator msg, 'mEK-TA', msg.match[1], msg.match[2]
-
-  robot.hear /(IF .*), ((ARE|CAN|DO|DOES|HOW|IS|MAY|MIGHT|SHOULD|THEN|WHAT|WHEN|WHERE|WHICH|WHO|WHY|WILL|WON\'T|WOULD)[ \'N].*)/i, id: 'meme.philosoraptor', (msg) ->
-    memeGenerator msg, '-kFVmQ', msg.match[1], msg.match[2] + (if msg.match[2].search(/\?$/)==(-1) then '?' else '')
-
-  robot.hear /(.*)(A+ND IT\'S GONE.*)/i, id: 'meme.its-gone', (msg) ->
-    memeGenerator msg, 'uIZe3Q', msg.match[1], msg.match[2]
-
-  robot.hear /WHAT IF I TOLD YOU (.*)/i, id: 'meme.told-you', (msg) ->
-    memeGenerator msg, 'fWle1w', 'WHAT IF I TOLD YOU', msg.match[1]
-
-  robot.hear /(WHY THE (FUCK|FRIEND)) (.*)/i, id: 'meme.why-the-friend', (msg) ->
-    memeGenerator msg, 'z8IPtw', msg.match[1], msg.match[3]
-
-  robot.hear /WTF (.*)/i, id: 'meme.wtf', (msg) ->
-    memeGenerator msg, 'z8IPtw', 'WTF', msg.match[1]
-
-  robot.hear /(IF .*)(THAT'D BE GREAT)/i, id: 'meme.be-great', (msg) ->
-    memeGenerator msg, 'q1cQXg', msg.match[1], msg.match[2]
-
-  robot.hear /((?:WOW )?(?:SUCH|MUCH) .*) ((SUCH|MUCH|SO|VERY|MANY) .*)/i, id: 'meme.doge', (msg) ->
-    memeGenerator msg, 'AfO6hw', msg.match[1], msg.match[2]
-
-  robot.hear /(.+, .+)(EVERYWHERE.*)/i, id: 'meme.everywhere', (msg) ->
-    memeGenerator msg, 'yDcY5w', msg.match[1], msg.match[2]
-
-  robot.hear /KHANIFY (.+)$/i, id: 'meme.khan', (msg) ->
-    # Characters we can duplicate to make it KHAAAAAANy
-    extendyChars = ['a', 'e', 'o', 'u']
-    khan = ''
-
-    # Only duplicate the first vowel (except i) we find
-    extended = false
-
-    for c in msg.match[1]
-      if c in extendyChars and not extended
-        khan += c for _ in [1..6]
-        extended = true
-      else
-        khan += c
-
-    # If there were no vowels, we need more 'oomph!'
-    khan += if extended then '!' else '!!!!!'
-
-    memeGenerator msg, 'DoLEMA', '', khan
-
-  robot.hear /(?:bad joke eel|pun)(.+\?) (.+)/i, id: 'meme.bad-joke-eel', (msg) ->
-    memeGenerator msg, 'R35VNw', msg.match[1], msg.match[2]
-    
-  robot.hear /why not (\w+)/i, id: 'meme.why-not-zoidberg', (msg) ->
-    if msg.match[1].toLowerCase() == "both"
-      msg.send "https://media.giphy.com/media/DZyxZgmcbC264/giphy.gif"
-    else
-      memeGenerator msg, 'kzsGfQ', msg.match[1] + '?', 'Why not Zoidberg?'
-
-  robot.hear /IT?'?S (ONLY|JUST)( A)? (.+)/i, id: 'meme.why-heff-med', (msg) ->
-    memeGenerator msg, 'iAGOQw', 'IS ONLY ' + msg.match[3], "WHY YOU HEFF TO BE MED?"
-
+  
