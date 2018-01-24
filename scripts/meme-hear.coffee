@@ -47,6 +47,7 @@ sanitizeHtml = require 'sanitize-html'
 
 memeGenerator = require "./lib/imgflip.coffee"
 idToUse = 'imgflip_id'
+memes = [];
 
 module.exports = (robot) ->
   
@@ -58,193 +59,31 @@ module.exports = (robot) ->
       context.response.message.text = clean
     next(done)
 
-  unless robot.brain.data.memes?
-      robot.brain.data.memes = [
-        {
-          id: 'meme.not-simply',
-          regex: /(one does not simply) (.*)/i,
-          imgflip_id: 61579,
-          memecaptain_id: 'da2i4A'
-        },
-        {
-          id: 'meme.interesting-man',
-          regex: /(i don'?t always .*) (but when i do,? .*)/i,
-          imgflip_id: 61532,
-          memecaptain_id: 'V8QnRQ'
-        },
-        {
-          id: 'meme.aliens',
-          regex: /aliens ()(.*)/i,
-          imgflip_id: 101470,
-          memecaptain_id: 'sO-Hng'
-        },
-        {
-          id: 'meme.grumpy-cat',
-          regex: /grumpy cat ()(.*)/i,
-          imgflip_id: 405658
-        },
-        {
-          id: 'meme.everywhere',
-          regex: /(.*),? (\1 everywhere)/i,
-          imgflip_id: 347390,
-          memecaptain_id: 'yDcY5w'
-        },
-        {
-          id: 'meme.not-sure-fry',
-          regex: /(not sure if .*) (or .*)/i,
-          imgflip_id: 61520,
-          memecaptain_id: 'CsNF8w'
-        },
-        {
-          id: 'meme.y-u-no',
-          regex: /(y u no) (.+)/i,
-          imgflip_id: 61527,
-          memecaptain_id: 'NryNmg'
-        },
-        {
-          id: 'meme.brace-yourself',
-          regex: /(brace yoursel[^\s]+) (.*)/i,
-          imgflip_id: 61546,
-          memecaptain_id: '_I74XA'
-        },
-        {
-          id: 'meme.all-the-things', 
-          regex: /(.*) (all the .*)/i,
-          imgflip_id: 61533,
-          memecaptain_id: 'Dv99KQ'
-          # add case for sad all the things?
-        },
-        {
-          id: 'meme.be-great',
-          regex: /(.*) (that would be great|that'?d be great)/i,
-          imgflip_id: 563423,
-          memecaptain_id: 'q1cQXg'
-        },
-        {
-          id: 'meme.too-damn-high',
-          regex: /(.*) (\w+\stoo damn .*)/i,
-          imgflip_id: 61580,
-          memecaptain_id: 'RCkv6Q'
-        },
-        {
-          id: 'meme.yo-dawg',
-          regex: /(yo dawg .*) (so .*)/i,
-          imgflip_id: 101716,
-          memecaptain_id: 'Yqk_kg'
-        },
-        {
-          id: 'meme.bad-time',
-          regex: /(.*) (.* gonna have a bad time)/i,
-          imgflip_id: 100951,
-          memecaptain_id: 'lfSVJw'
-        },
-        {
-          id: 'meme.only-one-around',
-          regex: /(am i the only one around here) (.*)/i,
-          imgflip_id: 259680
-        },
-        {
-          id: 'meme.told-you',
-          regex: /(what if i told you) (.*)/i,
-          imgflip_id: 100947,
-          memecaptain_id: 'fWle1w'
-        },
-        {
-          id: 'meme.aint-nobody',
-          regex: /(.*) (ain'?t nobody got time for? that)/i,
-          imgflip_id: 442575
-        },
-        {
-          id: 'meme.guarantee-it',
-          regex: /(.*) (i guarantee it)/i,
-          imgflip_id: 10672255
-        },
-        {
-          id: 'meme.its-gone',
-          regex: /(.*) (a+n+d+ it'?s gone)/i,
-          imgflip_id: 766986,
-          memecaptain_id: 'uIZe3Q'
-        },
-        {
-          id: 'meme.loses-minds'
-          regex: /(.* bats an eye) (.* loses their minds?)/i,
-          imgflip_id: 1790995
-        },
-        {
-          id: 'meme.back-in-my-day',
-          regex: /(back in my day) (.*)/i,
-          imgflip_id: 718432
-        },
-        {
-          id: 'meme.success-kid',
-          regex: /(.*)\b(SUCCESS|NAILED IT.*)/i,
-          memecaptain_id: 'AbNPRQ',
-          imgflip_id: 61544
-        },
-        {
-          id: 'meme.base-are-belong',
-          regex: /(All your .*) (are belong to .*)/i,
-          memecaptain_id: '76CAvA',
-          imgflip_id: 4503404
-        },
-        {
-          id: 'meme.bitch-please',
-          regex: /(.*)\s*BITCH PLEASE\s*(.*)/i,
-          memecaptain_id: 'jo9J0Q',
-          imgflip_id: 6411349
-        },
-        {
-          id: 'meme.philosoraptor',
-          regex: /(IF .*), ((ARE|CAN|DO|DOES|HOW|IS|MAY|MIGHT|SHOULD|THEN|WHAT|WHEN|WHERE|WHICH|WHO|WHY|WILL|WON\'T|WOULD)[ \'N].*)/i,
-          memecaptain_id: '-kFVmQ',
-          imgflip_id: 61516
-          # add question mark on end?
-        },
-        {
-          id: 'meme.wtf',
-          regex: /(WTF) (.*)/i,
-          memecaptain_id: 'z8IPtw',
-          imgflip_id: 245898
-        },
-        {
-          id: 'meme.doge',
-          regex: /((?:WOW )?(?:SUCH|MUCH) .*) ((SUCH|MUCH|SO|VERY|MANY) .*)/i,
-          memecaptain_id: 'AfO6hw',
-          imgflip_id: 8072285
-        },
-        {
-          id: 'meme.why-not',
-          regex: /why not (\w+)/i,
-          memecaptain_id: 'kzsGfQ',
-          imgflip_id: 61573,
-          top: '{1}?',
-          bottom: 'Why not Zoidberg?'
-          #por que no las dos?
-        },
-        {
-          id: 'meme.why-heff-med',
-          regex: /IT?'?S (ONLY|JUST)( A)? (.+)/i,
-          memecaptain_id: 'iAGOQw',
-          imgflip_id: 109522862,
-          top: 'IS ONLY {3}',
-          bottom: 'WHY YOU HEFF TO BE MED?'
-        },
-        {
-          id: 'meme.whats-the-deal',
-          regex: /(what'?s the deal) (.+)/i,
-          imgflip_id: 46404522
-        }
-      ]
+  storageLoaded = =>
+    robot.logger.info "meme-hear: brain has (re)loaded"
+    for meme in memes
+      robot.logger.debug "meme-hear: removing existing listener for #{meme.id}"
+      robot.listeners = robot.listeners.filter (listener) ->
+        return listener.options && listener.options.id != meme.id
+      
+    memes = [];
+    unless robot.brain.data.memes?
+      robot.brain.data.memes = defaultMemes
 
-  for meme in robot.brain.data.memes
-    setupResponder robot, meme
+    for meme in robot.brain.data.memes
+      setupResponder robot, meme
+  
+  robot.brain.on "loaded", storageLoaded
+  #storageLoaded() # just in case storage was loaded before we got here
 
 setupResponder = (robot, meme) ->
   if meme[idToUse]
-    robot.hear meme.regex, (msg) ->
+    robot.logger.debug "meme-hear: setting up meme #{meme['id']}"
+    responder = robot.hear new RegExp(meme.regex, "i"), {id: meme.id}, (msg) ->
       top = substitute(meme.top, msg, 1)
       bottom = substitute(meme.bottom, msg, 2)
       memeGenerator msg, meme[idToUse], top, bottom
+    memes.push meme
 
 substitute = (text, msg, matchNo) ->
   if text
@@ -253,4 +92,179 @@ substitute = (text, msg, matchNo) ->
   else
     return msg.match[matchNo]
     
-  
+defaultMemes =  [
+  {
+    id: 'meme.not-simply',
+    regex: "(one does not simply) (.*)",
+    imgflip_id: 61579,
+    memecaptain_id: 'da2i4A'
+  },
+  {
+    id: 'meme.interesting-man',
+    regex: "(i don'?t always .*) (but when i do,? .*)",
+    imgflip_id: 61532,
+    memecaptain_id: 'V8QnRQ'
+  },
+  {
+    id: 'meme.aliens',
+    regex: "aliens ()(.*)",
+    imgflip_id: 101470,
+    memecaptain_id: 'sO-Hng'
+  },
+  {
+    id: 'meme.grumpy-cat',
+    regex: "grumpy cat ()(.*)",
+    imgflip_id: 405658
+  },
+  {
+    id: 'meme.everywhere',
+    regex: "(.*),? (\\1 everywhere)",
+    imgflip_id: 347390,
+    memecaptain_id: 'yDcY5w'
+  },
+  {
+    id: 'meme.not-sure-fry',
+    regex: "(not sure if .*) (or .*)",
+    imgflip_id: 61520,
+    memecaptain_id: 'CsNF8w'
+  },
+  {
+    id: 'meme.y-u-no',
+    regex: "(y u no) (.+)",
+    imgflip_id: 61527,
+    memecaptain_id: 'NryNmg'
+  },
+  {
+    id: 'meme.brace-yourself',
+    regex: "(brace yoursel[^\\s]+) (.*)",
+    imgflip_id: 61546,
+    memecaptain_id: '_I74XA'
+  },
+  {
+    id: 'meme.all-the-things', 
+    regex: "(.*) (all the .*)",
+    imgflip_id: 61533,
+    memecaptain_id: 'Dv99KQ'
+    # add case for sad all the things?
+  },
+  {
+    id: 'meme.be-great',
+    regex: "(.*) (that would be great|that'?d be great)",
+    imgflip_id: 563423,
+    memecaptain_id: 'q1cQXg'
+  },
+  {
+    id: 'meme.too-damn-high',
+    regex: "(.*) (\\w+\\stoo damn .*)",
+    imgflip_id: 61580,
+    memecaptain_id: 'RCkv6Q'
+  },
+  {
+    id: 'meme.yo-dawg',
+    regex: "(yo dawg .*) (so .*)",
+    imgflip_id: 101716,
+    memecaptain_id: 'Yqk_kg'
+  },
+  {
+    id: 'meme.bad-time',
+    regex: "(.*) (.* gonna have a bad time)",
+    imgflip_id: 100951,
+    memecaptain_id: 'lfSVJw'
+  },
+  {
+    id: 'meme.only-one-around',
+    regex: "(am i the only one around here) (.*)",
+    imgflip_id: 259680
+  },
+  {
+    id: 'meme.told-you',
+    regex: "(what if i told you) (.*)",
+    imgflip_id: 100947,
+    memecaptain_id: 'fWle1w'
+  },
+  {
+    id: 'meme.aint-nobody',
+    regex: "(.*) (ain'?t nobody got time for? that)",
+    imgflip_id: 442575
+  },
+  {
+    id: 'meme.guarantee-it',
+    regex: "(.*) (i guarantee it)",
+    imgflip_id: 10672255
+  },
+  {
+    id: 'meme.its-gone',
+    regex: "(.*) (a+n+d+ it'?s gone)",
+    imgflip_id: 766986,
+    memecaptain_id: 'uIZe3Q'
+  },
+  {
+    id: 'meme.loses-minds'
+    regex: "(.* bats an eye) (.* loses their minds?)",
+    imgflip_id: 1790995
+  },
+  {
+    id: 'meme.back-in-my-day',
+    regex: "(back in my day) (.*)",
+    imgflip_id: 718432
+  },
+  {
+    id: 'meme.success-kid',
+    regex: "(.*)\\b(SUCCESS|NAILED IT.*)",
+    memecaptain_id: 'AbNPRQ',
+    imgflip_id: 61544
+  },
+  {
+    id: 'meme.base-are-belong',
+    regex: "(All your .*) (are belong to .*)",
+    memecaptain_id: '76CAvA',
+    imgflip_id: 4503404
+  },
+  {
+    id: 'meme.bitch-please',
+    regex: "(.*)\\s*BITCH PLEASE\\s*(.*)",
+    memecaptain_id: 'jo9J0Q',
+    imgflip_id: 6411349
+  },
+  {
+    id: 'meme.philosoraptor',
+    regex: "(IF .*), ((ARE|CAN|DO|DOES|HOW|IS|MAY|MIGHT|SHOULD|THEN|WHAT|WHEN|WHERE|WHICH|WHO|WHY|WILL|WON\\'T|WOULD)[ \\'N].*)",
+    memecaptain_id: '-kFVmQ',
+    imgflip_id: 61516
+    # add question mark on end?
+  },
+  {
+    id: 'meme.wtf',
+    regex: "(WTF) (.*)",
+    memecaptain_id: 'z8IPtw',
+    imgflip_id: 245898
+  },
+  {
+    id: 'meme.doge',
+    regex: "((?:WOW )?(?:SUCH|MUCH) .*) ((SUCH|MUCH|SO|VERY|MANY) .*)",
+    memecaptain_id: 'AfO6hw',
+    imgflip_id: 8072285
+  },
+  {
+    id: 'meme.why-not',
+    regex: "why not (\\w+)",
+    memecaptain_id: 'kzsGfQ',
+    imgflip_id: 61573,
+    top: '{1}?',
+    bottom: 'Why not Zoidberg?'
+    #por que no las dos?
+  },
+  {
+    id: 'meme.why-heff-med',
+    regex: "IT?'?S (ONLY|JUST)( A)? (.+)",
+    memecaptain_id: 'iAGOQw',
+    imgflip_id: 109522862,
+    top: 'IS ONLY {3}',
+    bottom: 'WHY YOU HEFF TO BE MED?'
+  },
+  {
+    id: 'meme.whats-the-deal',
+    regex: "(what'?s the deal) (.+)",
+    imgflip_id: 46404522
+  }
+]
