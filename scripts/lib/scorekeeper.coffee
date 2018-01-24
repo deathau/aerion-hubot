@@ -18,13 +18,21 @@ class ScoreKeeper
         reasons: {}
         last: {}
       }
-      if typeof @storage.last == "string"
-        @storage.last = {}
+      @validateStorage()
 
       @robot.logger.debug "Plus Plus Data Loaded: " + JSON.stringify(@storage, null, 2)
     @robot.brain.on "loaded", storageLoaded
     storageLoaded() # just in case storage was loaded before we got here
 
+  validateStorage: () ->
+    if !@storage.last || typeof @storage.last == "string"
+      @storage.last = {}
+    if !@storage.scores
+      @storage.scores = {}
+    if !@storage.log
+      @storage.log = {}
+    if !@storage.reasons
+      @storage.reasons = {}
 
   getUser: (user) ->
     @storage.scores[user] ||= 0
@@ -35,7 +43,7 @@ class ScoreKeeper
     @saveScoreLog(user, from, room, reason)
     @robot.brain.save()
 
-    [@storage.scores[user], @storage.reasons[user][reason] || "none"]
+    #[@storage.scores[user], @storage.reasons[user][reason] || "none"]
 
   add: (user, from, room, reason) ->
     @add(1, user, from, room, reason)

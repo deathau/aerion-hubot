@@ -63,7 +63,7 @@ module.exports = (robot) ->
     room = msg.message.room
 
     # do some sanitizing
-    reason = reason?.trim().toLowerCase()
+    reason = reason?.trim().toLowerCase().replace /\.|\#|\$|\/|\[|\]/, '_'
 
     # if name
     #  if name.charAt(0) == ':'

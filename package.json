@@ -5,9 +5,9 @@
   "author": "Bob Bergman <rbergman@atlassian.com>",
   "description": "A simple helpful robot for your Company",
   "dependencies": {
-    "@moqada/hubot-schedule-helper": "^1.0.0",
     "clark": "0.0.6",
-    "hubot": "^2.16.0",
+    "firebase-admin": "^5.8.1",
+    "hubot": "^2.19.0",
     "hubot-catfacts": "^1.0.1",
     "hubot-currency": "^1.0.1",
     "hubot-decide": "^1.0.1",
