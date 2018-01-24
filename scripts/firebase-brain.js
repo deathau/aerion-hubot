@@ -9,9 +9,10 @@
 //   None
 
 const firebase = require("firebase-admin");
-const serviceAccount = require("./lib/firebaseServiceAccount.json");
+//const serviceAccount = require("./lib/firebaseServiceAccount.json");
 
 module.exports = function (robot) {
+  const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
   robot.logger.info(`firebase-brain: private key: ${serviceAccount.private_key}`);
   var config = {
     credential: firebase.credential.cert(serviceAccount),
