@@ -64,21 +64,6 @@ exports.generateMeme = functions.https.onRequest((req, res) => {
         var h = minHeight;
         var w = minWidth;
 
-        var topArgs = [...baseArgs,
-            `caption:"${unescape(top)}"`,
-            tempFilePath,
-            '+swap',
-            '-gravity','north',
-            '-composite',tempFilePathTop
-        ];
-        var bottomArgs = [...baseArgs,
-            `caption:"${unescape(bottom)}"`,
-            tempFilePathTop,
-            '+swap',
-            '-gravity','south',
-            '-composite',tempFilePathBottom
-        ];
-
         file.download({
             destination: tempFilePath
         }).then(() => {
@@ -87,25 +72,75 @@ exports.generateMeme = functions.https.onRequest((req, res) => {
             return spawn('identify', ['-verbose', tempFilePath], { capture: [ 'stdout', 'stderr' ]});
         }).then(result => {
             const features = imageMagickOutputToObject(result.stdout);
+            console.log(features);
 
             h = features && features.height < minHeight ? features.height : minHeight
             w = features && features.width < minWidth ? features.width : minWidth;
 
-            var args = [...topArgs,
+            var args =  [
+                '-font', 'DejaVu-Sans',
+                '-strokewidth','2',
+                '-stroke','black',
+                '-background','transparent',
+                '-fill','white',
+                '-gravity','center',
                 '-size',w+'x'+h,
-                '-size',w+'x',];
+                'caption:'+unescape(top),
+                tempFilePath,
+                '+swap',
+                '-gravity','north',
+                '-size',w+'x',
+                '-composite',tempFilePathTop
+            ];
 
             console.log('running imagemagick with args: %s', args.join(' '))
 
-            return spawn('convert', args);
+            var promise = spawn('convert', args);
+
+            var childProcess = promise.childProcess;
+ 
+            console.log('[convert] childProcess.pid: ', childProcess.pid);
+            childProcess.stdout.on('data', function (data) {
+                console.log('[convert] stdout: ', data.toString());
+            });
+            childProcess.stderr.on('data', function (data) {
+                console.log('[convert] stderr: ', data.toString());
+            });
+
+            return promise;
         }).then(() => {
-            var args = [...bottomArgs,
+            var args =  [
+                '-font', 'DejaVu-Sans',
+                '-strokewidth','2',
+                '-stroke','black',
+                '-background','transparent',
+                '-fill','white',
+                '-gravity','center',
                 '-size',w+'x'+h,
-                '-size',w+'x',];
+                'caption:' + unescape(bottom),
+                tempFilePathTop,
+                '+swap',
+                '-gravity','south',
+                '-size',w+'x',
+                '-composite',tempFilePathBottom
+            ];
 
             console.log('running imagemagick with args: %s', args.join(' '))
 
-            return spawn('convert', args);
+            var promise = spawn('convert', args);
+
+            var childProcess = promise.childProcess;
+ 
+            console.log('[convert] childProcess.pid: ', childProcess.pid);
+            childProcess.stdout.on('data', function (data) {
+                console.log('[convert] stdout: ', data.toString());
+            });
+            childProcess.stderr.on('data', function (data) {
+                console.log('[convert] stderr: ', data.toString());
+            });
+
+            return promise;
+
         }).then(() => {
             console.log('Meme image created at', tempFilePathBottom);
             const memeFileName = `meme_${fileName}`;
@@ -114,8 +149,9 @@ exports.generateMeme = functions.https.onRequest((req, res) => {
             fs.unlinkSync(tempFilePath);
             fs.unlinkSync(tempFilePathTop);
             fs.unlinkSync(tempFilePathBottom);
+            console.log('cleanup successful!');
 
-            return;
+            return true;
         }).catch(err => {
             console.log(err);
         });
@@ -148,6 +184,13 @@ function imageMagickOutputToObject(output) {
     output = lines.join('');
     output = '{' + output.substring(0, output.length - 1) + '}'; // remove trailing comma.
     output = JSON.parse(output);
+    if((!output.width || !output.height) && output.Geometry) {
+        // parse the geometry
+        var split = output.Geometry.split('x');
+        output.width = split[0];
+        split = split[1].split('+');
+        output.height = split[0];
+    }
     console.log('Metadata extracted from image', output);
     return output;
   }
