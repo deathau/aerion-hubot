@@ -20,143 +20,174 @@ const fs = require('fs');
 // captioned image min height / width
 var minHeight = process.env.CAPTION_MIN_HEIGHT || 100
 var minWidth = process.env.CAPTION_MIN_WIDTH || 500
-
-// Take the text parameter passed to this HTTP endpoint and insert it into the
-// Realtime Database under the path /messages/:pushId/original
-exports.addMessage = functions.https.onRequest((req, res) => {
-    // Grab the text parameter.
-    const original = req.query.text;
-    // Push the new message into the Realtime Database using the Firebase Admin SDK.
-    admin.database().ref('/messages').push({original: original}).then(snapshot => {
-        // Redirect with 303 SEE OTHER to the URL of the pushed object in the Firebase console.
-        res.redirect(303, snapshot.ref);
-        return;
-    }).catch(err => {
-        console.log(err);
-    });
-});
+var impactFontFound = false;
 
 // Meme generation function
 exports.generateMeme = functions.https.onRequest((req, res) => {
-    // Grab the image url, top and bottom text
-    const {url, top, bottom} = req.query;
-    const options = {
-        caption: top || null,
-        bottomCaption: bottom || null
-    };
+    // Grab the image file name, top and bottom text
+    let {fileName, top, bottom} = req.query;
 
-    if(url) {
-        const fileName = 'Futurama-Fry.jpg';
+    top = unescape(top);
+    bottom = unescape(bottom);
+    fileName = unescape(fileName);
+
+    impactFontFound = fs.existsSync('impact.ttf');
+    console.log(`Found impact.ttf: ${impactFontFound?'YES':'NO'}`)
+
+    if(fileName) {
+        // create a hash to identify this meme image
+        const hash = hashCode(`top:${top};bottom:${bottom};fileName:${fileName}`);
+        
+        // get the template image specified from storage
         const bucket = storage.bucket();
         const file = bucket.file(fileName);
-        const tempFilePath = path.join(os.tmpdir(), fileName);
-        const tempFilePathTop = tempFilePath + "-top.jpg";
-        const tempFilePathBottom = tempFilePath + "-meme.jpg";
 
-        // default args for imagemagick
-        var baseArgs = [
-            '-strokewidth','2',
-            '-stroke','black',
-            '-background','transparent',
-            '-fill','white',
-            '-gravity','center'
-            ];
-        var h = minHeight;
-        var w = minWidth;
+        // create a filename to save the result to eventually
+        const memeFileName = `memes/${hash}.jpg`;
 
+        // create temp file paths for every step of the process
+        let tempFilePath = path.join(os.tmpdir(), `${hash}.jpg`);
+        let tempFilePathTop = path.join(os.tmpdir(), `${hash}_top.jpg`);
+        let tempFilePathBottom = path.join(os.tmpdir(), `${hash}_final.jpg`);
+
+        // get the default height and width measurement for the text
+        let h = minHeight;
+        let w = minWidth;
+
+        // a variable to hold the public link when we get there
+        let link = null;
+
+        console.log(`attempting to download ${fileName}`);
+        // download the file from storage
         file.download({
             destination: tempFilePath
         }).then(() => {
+            // image downloaded
             console.log('Image downloaded locally to', tempFilePath);
 
+            // get image details so we can work out width, etc.
             return spawn('identify', ['-verbose', tempFilePath], { capture: [ 'stdout', 'stderr' ]});
         }).then(result => {
+            // parse the result
             const features = imageMagickOutputToObject(result.stdout);
-            console.log(features);
 
+            // calculate the width and height to use for text
             h = features && features.height < minHeight ? features.height : minHeight
             w = features && features.width < minWidth ? features.width : minWidth;
 
-            var args =  [
-                '-font', 'DejaVu-Sans',
-                '-strokewidth','2',
-                '-stroke','black',
-                '-background','transparent',
-                '-fill','white',
-                '-gravity','center',
-                '-size',w+'x'+h,
-                'caption:'+unescape(top),
-                tempFilePath,
-                '+swap',
-                '-gravity','north',
-                '-size',w+'x',
-                '-composite',tempFilePathTop
-            ];
+            // if we have top text
+            if(top) {
+                // return the promise to generate the image
+                return captionImage(tempFilePath, tempFilePathTop, top, 'north', w, h);
+            }
+            else {
+                // we skipped generating a 'top' file, so use the initial file for the bottom
+                tempFilePathTop = tempFilePath;
 
-            console.log('running imagemagick with args: %s', args.join(' '))
-
-            var promise = spawn('convert', args);
-
-            var childProcess = promise.childProcess;
- 
-            console.log('[convert] childProcess.pid: ', childProcess.pid);
-            childProcess.stdout.on('data', function (data) {
-                console.log('[convert] stdout: ', data.toString());
-            });
-            childProcess.stderr.on('data', function (data) {
-                console.log('[convert] stderr: ', data.toString());
-            });
-
-            return promise;
+                // return from this promise
+                return true;
+            }
         }).then(() => {
-            var args =  [
-                '-font', 'DejaVu-Sans',
-                '-strokewidth','2',
-                '-stroke','black',
-                '-background','transparent',
-                '-fill','white',
-                '-gravity','center',
-                '-size',w+'x'+h,
-                'caption:' + unescape(bottom),
-                tempFilePathTop,
-                '+swap',
-                '-gravity','south',
-                '-size',w+'x',
-                '-composite',tempFilePathBottom
-            ];
+            //if we have bottom text
+            if(bottom) {                
+                // return the promise to generate the image
+                return captionImage(tempFilePathTop, tempFilePathBottom, bottom, 'south', w, h);
+            }
+            else {
+                // we skipped generating the 'bottom' file, so just use what came before
+                tempFilePathBottom = tempFilePathTop;
 
-            console.log('running imagemagick with args: %s', args.join(' '))
-
-            var promise = spawn('convert', args);
-
-            var childProcess = promise.childProcess;
- 
-            console.log('[convert] childProcess.pid: ', childProcess.pid);
-            childProcess.stdout.on('data', function (data) {
-                console.log('[convert] stdout: ', data.toString());
-            });
-            childProcess.stderr.on('data', function (data) {
-                console.log('[convert] stderr: ', data.toString());
-            });
-
-            return promise;
-
+                // return from this promise
+                return true;
+            }
         }).then(() => {
+            // image created
             console.log('Meme image created at', tempFilePathBottom);
-            const memeFileName = `meme_${fileName}`;
+            // return the promise to upload the image to storage
             return bucket.upload(tempFilePathBottom, { destination: memeFileName });
-        }).then(() => {
+        }).then((uploadResponse) => {
+            console.log(uploadResponse);
+
+            // grab the file and its link
+            let file = uploadResponse[0];
+            link = file.metadata.mediaLink;
+
+            //make the file public
+            return file.makePublic();
+        }).then((makePublicResponse) =>{
+            console.log(makePublicResponse);
+
+            // cleanup
             fs.unlinkSync(tempFilePath);
-            fs.unlinkSync(tempFilePathTop);
-            fs.unlinkSync(tempFilePathBottom);
+            if(tempFilePathTop !== tempFilePath) fs.unlinkSync(tempFilePathTop);
+            if(tempFilePathBottom !== tempFilePathTop) fs.unlinkSync(tempFilePathBottom);
             console.log('cleanup successful!');
 
+            // output the uploaded file's name
+            res.status(200).send(link);
+
+            // return from this promise
             return true;
         }).catch(err => {
+            //log the error
             console.log(err);
+
+            // output the error to the response
+            res.status(500).send(JSON.stringify(err));
         });
     }
 });
+
+function captionImage(inputPath, outputPath, text, gravity, w, h) {
+    // these are the arguments to pass to imagemagick (the order is important)
+    const args =  [
+        '-font', impactFontFound ? 'impact.ttf' : 'DejaVu-Sans',
+        '-strokewidth','2',
+        '-stroke','black',
+        '-background','transparent',
+        '-fill','white',
+        '-gravity','center',
+        '-size',w+'x'+h,
+        'caption:'+text,
+        inputPath,
+        '+swap',
+        '-gravity',gravity,
+        '-size',w+'x',
+        '-composite',outputPath
+    ];
+
+    console.log('running imagemagick with args: %s', args.join(' '))
+
+    // create a promise for the convert function from which we can output details for debugging purposes
+    const promise = spawn('convert', args);
+    const childProcess = promise.childProcess;
+
+    // capture outputs for stdout and stderror
+    childProcess.stdout.on('data', (data) => {
+        console.log('[convert] stdout: ', data.toString());
+    });
+    childProcess.stderr.on('data', (data) => {
+        console.log('[convert] stderr: ', data.toString());
+    });
+
+    // return the promise
+    return promise;
+}
+
+/**
+ * Generates a hash code for a string
+ * Taken from https://stackoverflow.com/a/7616484/304786
+ */
+function hashCode(string) {
+    var hash = 0, i, chr;
+    if (string.length === 0) return hash;
+    for (i = 0; i < string.length; i++) {
+        chr   = string.charCodeAt(i);
+        hash  = ((hash << 5) - hash) + chr;
+        hash |= 0; // Convert to 32bit integer
+    }
+    return (new Uint32Array([hash]))[0].toString(16); // convert to unsigned and output as a hex string
+}
 
 /**
  * Convert the output of ImageMagick's `identify -verbose` command to a JavaScript Object.
