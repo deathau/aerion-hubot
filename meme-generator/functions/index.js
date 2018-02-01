@@ -10,7 +10,7 @@ const storage = admin.app().storage("gs://aerion-hubot-brain.appspot.com");
 const spawn = require('child-process-promise').spawn;
 
 // The caption SDK to caption images
-const caption = require('caption');
+const gm = require('gm').subClass({ imageMagick: true });
 
 // Need these to access filesystem
 const path = require('path');
@@ -65,41 +65,7 @@ exports.generateMeme = functions.https.onRequest((req, res) => {
             // image downloaded
             console.log('Image downloaded locally to', tempFilePath);
 
-            // get image details so we can work out width, etc.
-            return spawn('identify', ['-verbose', tempFilePath], { capture: [ 'stdout', 'stderr' ]});
-        }).then(result => {
-            // parse the result
-            const features = imageMagickOutputToObject(result.stdout);
-
-            // calculate the width and height to use for text
-            h = features && features.height < minHeight ? features.height : minHeight
-            w = features && features.width < minWidth ? features.width : minWidth;
-
-            // if we have top text
-            if(top) {
-                // return the promise to generate the image
-                return captionImage(tempFilePath, tempFilePathTop, top, 'north', w, h);
-            }
-            else {
-                // we skipped generating a 'top' file, so use the initial file for the bottom
-                tempFilePathTop = tempFilePath;
-
-                // return from this promise
-                return true;
-            }
-        }).then(() => {
-            //if we have bottom text
-            if(bottom) {                
-                // return the promise to generate the image
-                return captionImage(tempFilePathTop, tempFilePathBottom, bottom, 'south', w, h);
-            }
-            else {
-                // we skipped generating the 'bottom' file, so just use what came before
-                tempFilePathBottom = tempFilePathTop;
-
-                // return from this promise
-                return true;
-            }
+            return captionImage(top, bottom, tempFilePath, tempFilePathBottom);
         }).then(() => {
             // image created
             console.log('Meme image created at', tempFilePathBottom);
@@ -119,8 +85,7 @@ exports.generateMeme = functions.https.onRequest((req, res) => {
 
             // cleanup
             fs.unlinkSync(tempFilePath);
-            if(tempFilePathTop !== tempFilePath) fs.unlinkSync(tempFilePathTop);
-            if(tempFilePathBottom !== tempFilePathTop) fs.unlinkSync(tempFilePathBottom);
+            fs.unlinkSync(tempFilePathBottom);
             console.log('cleanup successful!');
 
             // output the uploaded file's name
@@ -138,40 +103,24 @@ exports.generateMeme = functions.https.onRequest((req, res) => {
     }
 });
 
-function captionImage(inputPath, outputPath, text, gravity, w, h) {
-    // these are the arguments to pass to imagemagick (the order is important)
-    const args =  [
-        '-font', impactFontFound ? 'impact.ttf' : 'DejaVu-Sans',
-        '-strokewidth','2',
-        '-stroke','black',
-        '-background','transparent',
-        '-fill','white',
-        '-gravity','center',
-        '-size',w+'x'+h,
-        'caption:'+text,
-        inputPath,
-        '+swap',
-        '-gravity',gravity,
-        '-size',w+'x',
-        '-composite',outputPath
-    ];
-
-    console.log('running imagemagick with args: %s', args.join(' '))
-
-    // create a promise for the convert function from which we can output details for debugging purposes
-    const promise = spawn('convert', args);
-    const childProcess = promise.childProcess;
-
-    // capture outputs for stdout and stderror
-    childProcess.stdout.on('data', (data) => {
-        console.log('[convert] stdout: ', data.toString());
-    });
-    childProcess.stderr.on('data', (data) => {
-        console.log('[convert] stderr: ', data.toString());
-    });
-
-    // return the promise
-    return promise;
+function captionImage(top, bottom, tempFilePath, tempFilePathBottom) {
+    return new Promise((resolve, reject) => {
+        // get image details so we can work out width, etc.
+        const meme = gm(tempFilePath);
+        
+        meme.size((err, { height }) => {
+            if(err) reject(err);
+            meme.font('./impact.ttf', 42)
+                .fill('white')
+                .stroke('black', 2)
+                .drawText(0, -(height / 2 - 20), top, 'center')
+                .drawText(0, (height / 2 - 20), bottom, 'center')
+                .write(tempFilePathBottom, (err) => {
+                    if(err) reject(err);
+                    else resolve();
+                });
+        });
+    })
 }
 
 /**

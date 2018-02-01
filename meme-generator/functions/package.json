@@ -14,7 +14,8 @@
     "caption": "^0.1.1",
     "child-process-promise": "^2.2.1",
     "firebase-admin": "~5.8.1",
-    "firebase-functions": "^0.8.1"
+    "firebase-functions": "^0.8.1",
+    "gm": "^1.23.1"
   },
   "devDependencies": {
     "eslint": "^4.12.0",
