@@ -62,7 +62,7 @@ module.exports = (robot) ->
   storageLoaded = =>
     robot.logger.info "meme-hear: brain has (re)loaded"
     for meme in memes
-      robot.logger.debug "meme-hear: removing existing listener for #{meme.id}"
+      # robot.logger.debug "meme-hear: removing existing listener for #{meme.id}"
       robot.listeners = robot.listeners.filter (listener) ->
         return listener.options && listener.options.id != meme.id
       
@@ -78,7 +78,7 @@ module.exports = (robot) ->
 
 setupResponder = (robot, meme) ->
   if meme[idToUse]
-    robot.logger.debug "meme-hear: setting up meme #{meme['id']}"
+    # robot.logger.debug "meme-hear: setting up meme #{meme['id']}"
     responder = robot.hear new RegExp(meme.regex, "i"), {id: meme.id}, (msg) ->
       top = substitute(meme.top, msg, 1)
       bottom = substitute(meme.bottom, msg, 2)
