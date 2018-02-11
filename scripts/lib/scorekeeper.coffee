@@ -20,7 +20,7 @@ class ScoreKeeper
       }
       @validateStorage()
 
-      @robot.logger.debug "Plus Plus Data Loaded: " + JSON.stringify(@storage, null, 2)
+      @robot.logger.debug "Plus Plus Data Loaded " # + JSON.stringify(@storage, null, 2)
     @robot.brain.on "loaded", storageLoaded
     storageLoaded() # just in case storage was loaded before we got here
 
@@ -43,7 +43,7 @@ class ScoreKeeper
     @saveScoreLog(user, from, room, reason)
     @robot.brain.save()
 
-    #[@storage.scores[user], @storage.reasons[user][reason] || "none"]
+    [@storage.scores[user], if reason? && @storage.reasons[user] then @storage.reasons[user][reason] || "none" else "none"]
 
   add: (user, from, room, reason) ->
     @add(1, user, from, room, reason)
