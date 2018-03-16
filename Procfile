@@ -1,2 +1,2 @@
 web: bin/hubot -a hipchat
-worker: bin/hubot -a telegram -n aerionhubot
+worker: bin/hubot -a slack
