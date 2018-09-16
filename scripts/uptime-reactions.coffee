@@ -16,18 +16,17 @@
 {WebClient} = require "@slack/client"
 
 module.exports = (robot) ->
-  web = new WebClient robot.adapter.options.token
+    if robot.adapter.options && robot.adapter.options.token
+        web = new WebClient robot.adapter.options.token
 
-  robot.respond /Monitor is DOWN(.*)$/i, (msg) ->
-    robot.logger.info 'Heard that the monitor is down, attempting to react'
-    web.reactions.add
-      name: 'serverdown',
-      channel: msg.message.item.channel,
-      timestamp: msg.message.item.ts
+        robot.hear /Monitor is DOWN/i, (msg) ->
+            web.reactions.add
+                name: 'serverdown',
+                channel: msg.message.rawMessage.channel,
+                timestamp: msg.message.rawMessage.ts
 
-  robot.respond /Monitor is UP(.*)$/i, (msg) ->
-
-    web.reactions.add
-      name: 'serverdown',
-      channel: msg.message.item.channel,
-      timestamp: msg.message.item.ts
+        robot.hear /Monitor is UP/i, (msg) ->
+            web.reactions.add
+                name: 'serverdown',
+                channel: msg.message.rawMessage.channel,
+                timestamp: msg.message.rawMessage.ts
