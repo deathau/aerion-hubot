@@ -27,7 +27,7 @@ module.exports = (robot) ->
             if key == 'rawMessage'
                 for slackKey,slackValue of value
                     if !slackValue?()
-                        msg.send "slack.#{slackKey}: #{slackValue}"
+                        msg.send "rawMessage.#{slackKey}: #{slackValue}"
             else
                 if !value?()
                     msg.send "#{key}: #{value}"
