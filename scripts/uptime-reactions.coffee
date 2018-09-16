@@ -19,15 +19,15 @@ module.exports = (robot) ->
   web = new WebClient robot.adapter.options.token
 
   robot.respond /Monitor is DOWN(.*)$/i, (msg) ->
-
+    robot.logger.info 'Heard that the monitor is down, attempting to react'
     web.reactions.add
       name: 'serverdown',
-      channel: res.message.item.channel,
-      timestamp: res.message.item.ts
+      channel: msg.message.item.channel,
+      timestamp: msg.message.item.ts
 
   robot.respond /Monitor is UP(.*)$/i, (msg) ->
 
     web.reactions.add
       name: 'serverdown',
-      channel: res.message.item.channel,
-      timestamp: res.message.item.ts
+      channel: msg.message.item.channel,
+      timestamp: msg.message.item.ts
