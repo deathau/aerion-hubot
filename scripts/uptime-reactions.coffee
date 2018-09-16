@@ -23,11 +23,11 @@ module.exports = (robot) ->
             robot.logger.info "attempting to react. name:'serverdown', channel: #{msg.message.rawMessage.channel}, timestamp: #{msg.message.rawMessage.ts}"
             web.reactions.add
                 name: 'serverdown',
-                channel: msg.message.rawMessage.channel,
-                timestamp: msg.message.rawMessage.ts
+                channel: "#{msg.message.rawMessage.channel}",
+                timestamp: "#{msg.message.rawMessage.ts}"
 
         robot.hear /Monitor is UP/i, (msg) ->
             web.reactions.add
-                name: 'serverdown',
-                channel: msg.message.rawMessage.channel,
-                timestamp: msg.message.rawMessage.ts
+                name: 'serverup',
+                channel: "#{msg.message.rawMessage.channel}",
+                timestamp: "#{msg.message.rawMessage.ts}"
