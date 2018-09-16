@@ -14,7 +14,7 @@
 #   gordon
 
 module.exports = (robot) ->
-    robot.respond /^who am i\??$/i, (msg) ->
+    robot.hear /^who am i\??$/i, (msg) ->
         for key,value of msg.message.user
             if key == 'slack'
                 for slackKey,slackValue of value
@@ -22,12 +22,12 @@ module.exports = (robot) ->
             else
                 msg.send "#{key}: #{value}"
 
-    robot.respond /^what am i\??$/i, (msg) ->
+    robot.hear /^what am i\??$/i, (msg) ->
         for key,value of msg.message
             if key == 'rawMessage'
                 for slackKey,slackValue of value
                     if !slackValue?()
-                        msg.send "slack.#{slackKey}: #{slackValue}"
+                        msg.send "rawMessage.#{slackKey}: #{slackValue}"
             else
                 if !value?()
                     msg.send "#{key}: #{value}"
