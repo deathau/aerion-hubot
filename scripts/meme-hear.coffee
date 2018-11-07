@@ -7,41 +7,42 @@
 #   None
 #
 # Commands:
-#   Y U NO <text> - Meme: Y U NO GUY w/ bottom caption
-#   I don't always <something> but when i do <text> - Meme: The Most Interesting man in the World
-#   <text> (SUCCESS|NAILED IT) - Meme: Success kid w/ top caption
-#   <text> ALL the <things> - Meme: ALL THE THINGS
-#   <text> TOO DAMN <high> - Meme: THE RENT IS TOO DAMN HIGH guy
-#   Yo dawg <text> so <text> - Meme: Yo Dawg
-#   All your <text> are belong to <text> - Meme: All your <text> are belong to <text>
-#   If <text>, <question> <text>? - Meme: Philosoraptor
-#   <text>, BITCH PLEASE <text> - Meme: Yao Ming
-#   <text>, COURAGE <text> - Meme: Courage Wolf
-#   ONE DOES NOT SIMPLY <text> - Meme: Boromir
-#   IF YOU <text> GONNA HAVE A BAD TIME - Meme: Ski Instructor
-#   IF YOU <text> TROLLFACE <text> - Meme: Troll Face
-#   Aliens guy <text> - Meme: Aliens guy
-#   Brace yourself <text> - Meme: Ned Stark braces for <text>
-#   Iron Price <text> - Meme: To get <text>? Pay the iron price!
-#   Not sure if <something> or <something else> - Meme: Futurama Fry
-#   <text>, AND IT'S GONE - Meme: Bank Teller
-#   WHAT IF I TOLD YOU <text> - Meme: Morpheus "What if I told you"
-#   WTF <text> - Meme: Picard WTF
-#   IF <text> THAT'D BE GREAT - Meme: Generates Lumberg
-#   MUCH <text> (SO|VERY) <text> - Meme: Generates Doge
-#   <text>, <text> EVERYWHERE - Meme: Generates Buzz Lightyear
-#   khanify <text> - Meme: Has Shatner yell your phrase
-#   pun | bad joke eel <text>? <text> - Meme: Bad joke eel
-#   pun | bad joke eel <text> / <text> - Meme: Bad joke eel
-#   why not both? - Meme: Mexican girl
-#   why not <text> - Meme: Why not Zoidberg?
-#   is only <text> - Meme: Why you heff to be med?
+#   [Meme] Y U NO <text> - Meme: Y U NO GUY w/ bottom caption
+#   [Meme] I don't always <something> but when i do <text> - Meme: The Most Interesting man in the World
+#   [Meme] <text> (SUCCESS|NAILED IT) - Meme: Success kid w/ top caption
+#   [Meme] <text> ALL the <things> - Meme: ALL THE THINGS
+#   [Meme] <text> TOO DAMN <high> - Meme: THE RENT IS TOO DAMN HIGH guy
+#   [Meme] Yo dawg <text> so <text> - Meme: Yo Dawg
+#   [Meme] All your <text> are belong to <text> - Meme: All your <text> are belong to <text>
+#   [Meme] If <text>, <question> <text>? - Meme: Philosoraptor
+#   [Meme] <text>, BITCH PLEASE <text> - Meme: Yao Ming
+#   [Meme] <text>, COURAGE <text> - Meme: Courage Wolf
+#   [Meme] ONE DOES NOT SIMPLY <text> - Meme: Boromir
+#   [Meme] IF YOU <text> GONNA HAVE A BAD TIME - Meme: Ski Instructor
+#   [Meme] IF YOU <text> TROLLFACE <text> - Meme: Troll Face
+#   [Meme] Aliens guy <text> - Meme: Aliens guy
+#   [Meme] Brace yourself <text> - Meme: Ned Stark braces for <text>
+#   [Meme] Iron Price <text> - Meme: To get <text>? Pay the iron price!
+#   [Meme] Not sure if <something> or <something else> - Meme: Futurama Fry
+#   [Meme] <text>, AND IT'S GONE - Meme: Bank Teller
+#   [Meme] WHAT IF I TOLD YOU <text> - Meme: Morpheus "What if I told you"
+#   [Meme] WTF <text> - Meme: Picard WTF
+#   [Meme] IF <text> THAT'D BE GREAT - Meme: Generates Lumberg
+#   [Meme] MUCH <text> (SO|VERY) <text> - Meme: Generates Doge
+#   [Meme] <text>, <text> EVERYWHERE - Meme: Generates Buzz Lightyear
+#   [Meme] khanify <text> - Meme: Has Shatner yell your phrase
+#   [Meme] pun | bad joke eel <text>? <text> - Meme: Bad joke eel
+#   [Meme] pun | bad joke eel <text> / <text> - Meme: Bad joke eel
+#   [Meme] why not both? - Meme: Mexican girl
+#   [Meme] why not <text> - Meme: Why not Zoidberg?
+#   [Meme] is only <text> - Meme: Why you heff to be med?
 # Author:
 #   bobanj
 #   cycomachead, Michael Ball <cycomachead@gmail.com>
 #   peelman, Nick Peelman <nick@peelman.us>
 #   ericjsilva, Eric Silva
 #   lukewaite, Luke Waite
+#   death_au, Gordon Pedersen <gordon@aerion.com.au>
 
 sanitizeHtml = require 'sanitize-html'
 

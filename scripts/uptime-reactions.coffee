@@ -20,7 +20,6 @@ module.exports = (robot) ->
         web = new WebClient robot.adapter.options.token
 
         robot.hear /Monitor is DOWN/i, (msg) ->
-            robot.logger.info "attempting to react. name:'serverdown', channel: #{msg.message.rawMessage.channel}, timestamp: #{msg.message.rawMessage.ts}"
             web.reactions.add
                 name: 'serverdown',
                 channel: "#{msg.message.rawMessage.channel}",

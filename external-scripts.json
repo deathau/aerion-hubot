@@ -8,13 +8,10 @@
   "hubot-maps",
   "hubot-rules",
   "hubot-youtube",
-  "hubot-meme",
-  "hubot-catfacts",
   "hubot-currency",
   "hubot-isup",
   "hubot-urban",
-  "hubot-wikipedia",
   "hubot-xkcd",
-  "hubot-relevant-xkcd",
-  "hubot-decide"
+  "hubot-decide",
+  "say-with-hubot"
 ]

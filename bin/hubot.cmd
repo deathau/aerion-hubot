@@ -1,3 +1,3 @@
 @echo off
-
-npm install && node_modules\.bin\hubot.cmd --name "triatomic" %* 
+SET FIREBASE_URL=https://aerion-hubot-brain.firebaseio.com
+npm install && node_modules\.bin\hubot.cmd --name "hubot" %* 

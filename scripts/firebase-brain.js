@@ -18,6 +18,7 @@ module.exports = function (robot) {
     credential: firebase.credential.cert(serviceAccount),
     databaseURL: process.env.FIREBASE_URL,
   };
+  robot.logger.info(config.databaseURL);
   firebase.initializeApp(config);
 
   var db = firebase.database();
